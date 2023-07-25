@@ -4,12 +4,17 @@ import 'package:get_storage/get_storage.dart';
 
 class SettingsController extends GetxController {
   RxBool isDarkMode = false.obs;
-  String prefix = "4146";
+  RxString prefix = "4146".obs;
+  final TextEditingController prefixController = TextEditingController();
 
   @override
   void onInit() {
     isDarkMode.value = GetStorage().read("isDarkMode") ?? Get.isDarkMode;
-    prefix = GetStorage().read("prefix") ?? prefix;
+    if (isDarkMode.value) {
+      Get.changeThemeMode(ThemeMode.dark);
+    }
+    prefix.value = GetStorage().read("prefix") ?? prefix.value;
+    prefixController.text = prefix.value;
     super.onInit();
   }
 
@@ -19,8 +24,9 @@ class SettingsController extends GetxController {
     GetStorage().write("isDarkMode", isDarkMode.value);
   }
 
-  void setPrefix(String value) {
-    prefix = value;
-    GetStorage().write("prefix", prefix);
+  void setPrefix() {
+    prefix.value = prefixController.text.trim();
+    // prefix.value = value;
+    GetStorage().write("prefix", prefix.value);
   }
 }

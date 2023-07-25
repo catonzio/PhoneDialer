@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:phone_dialer/controllers/phone_controller.dart';
 import 'package:phone_dialer/views/contacts_page.dart';
 import 'package:phone_dialer/views/phone_dialer.dart';
 import 'package:phone_dialer/views/register_page.dart';
+import 'package:phone_dialer/views/tab_page.dart';
 
 class HomeController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -18,6 +20,8 @@ class HomeController extends GetxController
     )
   ];
 
+  final RxString title = "".obs;
+  late Rx<TabPage> bodyWidget;
   final List<Type> pages = [RegisterPage, PhoneDialer, ContactsPage];
   RxInt selectedIndex = 1.obs;
 
@@ -25,6 +29,9 @@ class HomeController extends GetxController
 
   @override
   onInit() {
+    Get.put(PhoneController());
+    bodyWidget = (PhoneDialer(key: const ValueKey<int>(1)) as TabPage).obs;
+    title.value = "Phone Dialer";
     //tabController = TabController(length: tabs.length, vsync: this);
     // tabController.index = 1;
     super.onInit();
@@ -37,25 +44,28 @@ class HomeController extends GetxController
   }
 
   updateTab(int index) {
-    Widget newPage = Container();
+    if (index == selectedIndex.value) return;
+    late TabPage newPage;
+    String newTitle = "";
     switch (pages[index]) {
       case RegisterPage:
-        newPage = RegisterPage();
+        // Get.put(RegisterController());
+        newPage = RegisterPage(key: ValueKey<int>(0));
+        newTitle = "Register";
         break;
       case PhoneDialer:
-        newPage = PhoneDialer();
+        // Get.put(PhoneController());
+        newPage = PhoneDialer(key: const ValueKey<int>(1));
+        newTitle = "Phone Dialer";
         break;
       case ContactsPage:
-        newPage = ContactsPage();
+        // Get.put(ContactsController());
+        newPage = ContactsPage(key: const ValueKey<int>(2));
+        newTitle = "Contacts";
         break;
     }
-    Get.off(newPage,
-        transition: index > selectedIndex.value
-            ? Transition.rightToLeft
-            : Transition.leftToRight);
-    //.then((value) => selectedIndex.value = index);
-    // Get.offAndToNamed(routes[index]);
+    bodyWidget.value = newPage as TabPage;
+    title.value = newTitle;
     selectedIndex.value = index;
-    //tabController.index = index;
   }
 }

@@ -19,12 +19,12 @@ class BottomBarIcon extends StatelessWidget {
         IconButton(
           icon: icon,
           onPressed: onPressed,
-          color: isActive ? Colors.purple : Colors.grey,
+          color: isActive ? Colors.white : const Color(0xFF4E3366),
         ),
         Container(
           height: 2,
           width: 15,
-          color: isActive ? Colors.purple : Colors.transparent,
+          color: isActive ? Colors.white : Colors.transparent,
         )
       ],
     );

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'settings_controller.dart';
+
 class PhoneController extends GetxController {
   RxString phoneNumber = "123".obs;
   TextEditingController numberController = TextEditingController();
@@ -18,6 +20,11 @@ class PhoneController extends GetxController {
     super.dispose();
   }
 
+  setText(String text) {
+    phoneNumber.value = text;
+    numberController.text = phoneNumber.value;
+  }
+
   resetText() {
     print("Resetting text");
     phoneNumber.value = "";
@@ -26,8 +33,23 @@ class PhoneController extends GetxController {
 
   deleteChar() {
     print("Deleting char");
-    phoneNumber.value =
-        phoneNumber.value.substring(0, phoneNumber.value.length - 1);
+    if (phoneNumber.value.isEmpty || numberController.selection.baseOffset == 0)
+      return;
+    if (numberController.selection.baseOffset != lastCursorPos) {
+      lastCursorPos = numberController.selection.baseOffset;
+    }
+    if (lastCursorPos == -1) {
+      phoneNumber.value =
+          phoneNumber.value.substring(0, phoneNumber.value.length - 1);
+    } else {
+      phoneNumber.value = phoneNumber.value.substring(0, lastCursorPos - 1) +
+          (lastCursorPos < phoneNumber.value.length
+              ? phoneNumber.value.substring(lastCursorPos)
+              : '0');
+      lastCursorPos--;
+    }
+    // phoneNumber.value =
+    //     phoneNumber.value.substring(0, phoneNumber.value.length - 1);
     numberController.text = phoneNumber.value;
   }
 
@@ -56,9 +78,9 @@ class PhoneController extends GetxController {
   }
 
   makeCall() {
-    // SettingsController currentSettings = Get.find<SettingsController>();
-    // String number = '${currentSettings.prefix}${numberController.text},9';
-    String number = '${numberController.text},9';
+    SettingsController currentSettings = Get.find<SettingsController>();
+    String number = '${currentSettings.prefix}${numberController.text},9';
+    // String number = '${numberController.text},9';
     print(number);
     // launchUrl(Uri.parse('tel://$number'));
   }
