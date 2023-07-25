@@ -9,7 +9,9 @@ import 'package:phone_dialer/controllers/phone_controller.dart';
 class ContactsController extends GetxController {
   List<Contact> contacts = <Contact>[];
   RxList<Contact> contactsFiltered = <Contact>[].obs;
+  RxMap<String, List<int>> groups = <String, List<int>>{}.obs;
   RxBool isLoadingContacts = false.obs;
+  RxBool isSearching = false.obs;
   final TextEditingController searchController = TextEditingController();
 
   @override
@@ -30,8 +32,10 @@ class ContactsController extends GetxController {
         .where((Contact c) => !c.isBlank! && c.displayName.isNotEmpty)
         .toList()
         .obs;
+    contacts.sort((a, b) => a.displayName.compareTo(b.displayName));
     contactsFiltered.value = contacts;
     isLoadingContacts.value = false;
+    groups.value = buildGroups();
     print("Contacts loaded");
   }
 
@@ -41,9 +45,23 @@ class ContactsController extends GetxController {
           .where((Contact c) =>
               c.displayName.toLowerCase().contains(text.toLowerCase()))
           .toList();
+      groups.value = buildGroups();
     } else {
       contactsFiltered.value = contacts;
     }
+  }
+
+  buildGroups() {
+    Map<String, List<int>> groups = {};
+    for (int i = 0; i < contactsFiltered.length; i++) {
+      String firstLetter = contactsFiltered[i].displayName[0].toUpperCase();
+      if (groups.containsKey(firstLetter)) {
+        groups[firstLetter]!.add(i);
+      } else {
+        groups[firstLetter] = [i];
+      }
+    }
+    return groups;
   }
 
   clearSearch() {
@@ -52,19 +70,19 @@ class ContactsController extends GetxController {
     // loadContacts();
   }
 
-  addFakeContacts() async {
-    var rng = Random();
-
-    for (int i = 0; i < 10; i++) {
-      Contact newContact = Contact()
-        ..name.first = String.fromCharCodes(
-            List.generate(10, (index) => rng.nextInt(33) + 89))
-        ..name.last = String.fromCharCodes(
-            List.generate(10, (index) => rng.nextInt(33) + 89))
-        ..phones = [Phone((rng.nextInt(900000) + 100000).toString())];
-      await newContact.insert();
-    }
-  }
+  // addFakeContacts() async {
+  //   var rng = Random();
+  // 
+  //   for (int i = 0; i < 10; i++) {
+  //     Contact newContact = Contact()
+  //       ..name.first = String.fromCharCodes(
+  //           List.generate(10, (index) => rng.nextInt(33) + 89))
+  //       ..name.last = String.fromCharCodes(
+  //           List.generate(10, (index) => rng.nextInt(33) + 89))
+  //       ..phones = [Phone((rng.nextInt(900000) + 100000).toString())];
+  //     await newContact.insert();
+  //   }
+  // }
 
   setCurrentNumber(String phone) {
     Get.back();

@@ -11,7 +11,7 @@ class ContactsPage extends TabPage {
 
   @override
   Widget build(BuildContext context) {
-    controller.addFakeContacts();
+    // controller.addFakeContacts();
     return Column(children: [
       Container(
         padding: const EdgeInsets.fromLTRB(20, 0, 0, 20),

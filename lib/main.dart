@@ -31,7 +31,10 @@ class MyApp extends StatelessWidget {
         ),
         darkTheme: ThemeData.dark(
             useMaterial3:
-                true) /*.copyWith(
+                true).copyWith(
+            scaffoldBackgroundColor: Colors.black,
+            
+                ) /*.copyWith(
             scaffoldBackgroundColor: const Color(0xFF21152B),
             appBarTheme: const AppBarTheme(
                 elevation: 2,
