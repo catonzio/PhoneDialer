@@ -57,7 +57,6 @@ class ListPage extends StatelessWidget {
           children: [
             Obx(() => controller.isSearching.value ?
               Expanded(
-                
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                 child: TextField(
@@ -92,14 +91,15 @@ class ListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
+    double height = MediaQuery.of(context).size.height / 100;
 
     return SafeArea(
       child: Scaffold(
         body: CustomScrollView(
+          controller: controller.scrollController,
       slivers: <Widget>[
         SliverFixedExtentList(
-          itemExtent: height * 0.3,
+          itemExtent: height * 30,
           delegate: SliverChildListDelegate(
             [
               Container(
@@ -128,7 +128,7 @@ class ListPage extends StatelessWidget {
             ],
           ),
         ),
-        makeHeader('Header Section 2', height * 0.08),
+        makeHeader('Header Section 2', height * 8),
         Obx(
           () => controller.isLoadingContacts.value
               ? const SliverToBoxAdapter(
@@ -136,18 +136,32 @@ class ListPage extends StatelessWidget {
                     child: CircularProgressIndicator(),
                   ),
                 )
-              : SliverList(
-                  //itemExtent: 500.0,
-                  delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                    List<String> keys = controller.groups.keys.toList();
-                    keys.sort();
-                    String group = keys[index];//.elementAt(index);
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                      child: GroupElement(group: group),
-                    );
-                  }, childCount: controller.groups.keys.length)),
+              : SliverToBoxAdapter(
+                child: Stack(
+                  children: [
+                    Column(
+                        children: [
+                          for (String group in controller.groups.keys.toList()..sort())
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                              child: GroupElement(group: group),
+                            )
+                        ]
+                      ),
+                    /*SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                      List<String> keys = controller.groups.keys.toList();
+                      keys.sort();
+                      String group = keys[index];
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                        child: GroupElement(group: group),
+                      );
+                    }, childCount: controller.groups.keys.length)),*/
+                  ]
+                ),
+              )
         )
       ],
     )
@@ -167,14 +181,18 @@ class GroupElement extends StatelessWidget {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height / 100;
     List<int> idxs = controller.groups[group]!;
+
     return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Text(group, style: TextStyle(color: Colors.white)),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Text(group, style: TextStyle(color: Colors.white)),
+            ),
             Container(
               width: double.infinity,
-              height: height*3.8*controller.groups[group]!.length.toDouble(),
+              height: height*6.3*controller.groups[group]!.length.toDouble(),
               decoration: BoxDecoration(
               color: Colors.grey[900],
                 border: Border.all(
@@ -182,19 +200,32 @@ class GroupElement extends StatelessWidget {
                 ),
                 borderRadius: BorderRadius.all(Radius.circular(20))
               ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(vertical: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: idxs.map((int index) {
-                    return ListElement(contact: controller.contactsFiltered[index], index: idxs.indexOf(index));
-                  }).toList()
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: buildElementsList(context, idxs)
                 )
-              )
             )
           ]
-        ); 
+        
+    ); 
+  }
+
+  List<Widget> buildElementsList(BuildContext context, List<int> idxs) {
+    double height = MediaQuery.of(context).size.height / 100;
+    double width = MediaQuery.of(context).size.width / 100;
+    List<Widget> res = <Widget>[];
+    for (int i = 0; i < idxs.length; i++) {
+      if (i > 0) {
+        res.add(Padding(
+          padding: EdgeInsets.fromLTRB(12 + width*2 + height*4, 0, 8, 0),
+          child: Divider()
+        ));
+      }
+      res.add(ListElement(contact: controller.contacts[idxs[i]], index: i));
+    }
+    return res;
   }
 }
 
@@ -205,16 +236,37 @@ class ListElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        if (index > 0) 
-          Divider(),
-        Container(
-          child: Text("${contact.displayName} $index"),
+    double height = MediaQuery.of(context).size.height / 100;
+    double width = MediaQuery.of(context).size.width / 100;
+
+    return Container(
+      // color: Colors.red[(index+1)*50 % 900],
+      padding: EdgeInsets.symmetric(horizontal: width*2),
+      child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              width: height*4,
+              height: height*4,
+              decoration: BoxDecoration(
+                // color: Colors.grey[900],
+                color: Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
+                border: Border.all(
+                  color: Colors.black,
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(20))
+              ),
+              child: Center(
+                child: Text("${contact.displayName[0]}", style: TextStyle(color: Colors.white, fontSize: 20),),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(12, 0, 8, 0),
+              child: Text("${contact.displayName} $index"),
+            ),
+          ]
         )
-      ]
     );
   }
 }

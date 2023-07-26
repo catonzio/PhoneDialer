@@ -12,7 +12,9 @@ class ContactsController extends GetxController {
   RxMap<String, List<int>> groups = <String, List<int>>{}.obs;
   RxBool isLoadingContacts = false.obs;
   RxBool isSearching = false.obs;
+  Rx<DateTime> lastScrolled = DateTime.now().subtract(const Duration(days: 1)).obs;
   final TextEditingController searchController = TextEditingController();
+  final ScrollController scrollController = ScrollController();
 
   @override
   onInit() async {
@@ -22,7 +24,27 @@ class ContactsController extends GetxController {
       Get.snackbar("Permission denied", "Please allow contacts permission",
           snackPosition: SnackPosition.BOTTOM);
     }
+    scrollController.addListener(reactToScroll);
     super.onInit();
+  }
+
+  reactToScroll() {
+    print("Scrooll");
+    if (scrollController.offset >= scrollController.position.maxScrollExtent &&
+        !scrollController.position.outOfRange) {
+      print("Reached the bottom");
+    }
+    if (scrollController.offset <= scrollController.position.minScrollExtent &&
+        !scrollController.position.outOfRange) {
+      print("Reached the top");
+    }
+    if (lastScrolled.value.difference(DateTime.now()).inSeconds > 1) {
+      lastScrolled = DateTime.now().obs;
+      isSearching.value = true;
+    } else if (lastScrolled.value.difference(DateTime.now()).inSeconds > 3) {
+      lastScrolled.value = DateTime.now();
+      isSearching.value = false;
+    }
   }
 
   void loadContacts() async {
