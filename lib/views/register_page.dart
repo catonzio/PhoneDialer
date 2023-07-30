@@ -1,71 +1,72 @@
-import 'package:call_log/call_log.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/controllers/register_controller.dart';
 import 'package:phone_dialer/views/default_page.dart';
+import 'package:phone_dialer/views/list_page.dart';
+import 'package:phone_dialer/widgets/entries_group_element.dart';
+import 'package:phone_dialer/widgets/entry_element.dart';
 
-import 'tab_page.dart';
-
-class RegisterPage extends TabPage {
+class RegisterPage extends StatelessWidget {
   final RegisterController controller = Get.put(RegisterController());
   RegisterPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Obx(() => controller.isLoadingEntries.value
-            ? const Center(child: CircularProgressIndicator())
-            : (controller.entries.isEmpty
-                ? const Center(child: Text("There are no call logs"))
-                : Expanded(
-                    child: Obx(() => ListView.builder(
-                        itemCount: controller.entries.length,
-                        itemBuilder: (context, index) {
-                          return CallEntryWidget(
-                              entry: controller.entries[index], index: index);
-                        })))))
-      ],
-    );
+    return DefaultPage(
+        body: ListPage(
+      tag: "register",
+      title: const Text(
+        "Call logs",
+        style: TextStyle(fontSize: 50.0, color: Colors.white),
+      ),
+      subtitle: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            "There are ${controller.entries.length} call logs",
+            style: const TextStyle(fontSize: 15.0, color: Colors.white),
+          )),
+      mainList: buildMainList(context),
+      scrollBar: Container(),
+      searchFunction: (String text) => controller.searchEntries(text),
+    ));
   }
-}
 
-class CallEntryWidget extends StatelessWidget {
-  final RegisterController controller = Get.find<RegisterController>();
-  final CallLogEntry entry;
-  final int index;
-
-  CallEntryWidget({super.key, required this.entry, required this.index});
-
-  @override
-  Widget build(BuildContext context) {
-    if (index == 0) {
-      return Column(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.3,
-          ),
-          ListTile(
-            title: Text(entry.name ?? ""),
-            subtitle: Text(entry.number ?? ""),
-            trailing: IconButton(
-                onPressed: () {
-                  controller.removeEntry(index);
-                },
-                icon: const Icon(Icons.delete)),
+  Widget buildMainList(BuildContext context) {
+    return Obx(() => controller.isLoadingEntries.value
+        ? const SliverToBoxAdapter(
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
           )
-        ],
-      );
-    } else {
-      return ListTile(
-        title: Text(entry.name ?? ""),
-        subtitle: Text(entry.number ?? ""),
-        trailing: IconButton(
-            onPressed: () {
-              controller.removeEntry(index);
-            },
-            icon: const Icon(Icons.delete)),
-      );
+        : SliverToBoxAdapter(
+            child: Column(children: [
+              for (DateTime group in controller.groups.keys.toList()..sort())
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
+                  child: EntriesGroupElement(
+                      group: group, elements: buildElementsList),
+                )
+              // for (int i = 0; i < controller.entries.length; i++)
+              //   Padding(
+              //       padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
+              //       child:
+              //           CallEntryWidget(entry: controller.entries[i], index: i))
+            ]),
+          ));
+  }
+
+  List<Widget> buildElementsList(BuildContext context, List<int> idxs) {
+    double height = MediaQuery.of(context).size.height / 100;
+    double width = MediaQuery.of(context).size.width / 100;
+    List<Widget> res = <Widget>[];
+    for (int i = 0; i < idxs.length; i++) {
+      if (i > 0) {
+        res.add(Padding(
+            padding: EdgeInsets.fromLTRB(12 + width * 2 + height * 4, 0, 8, 0),
+            child: const Divider()));
+      }
+      res.add(EntryElement(entry: controller.entries[idxs[i]], index: i));
     }
+    return res;
   }
 }

@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:phone_dialer/controllers/home_controller.dart';
-import 'package:phone_dialer/views/contacts_page.dart';
-import 'package:phone_dialer/views/default_page.dart';
-import 'package:phone_dialer/views/list_page.dart';
 import 'package:phone_dialer/views/register_page.dart';
 
 import 'controllers/settings_controller.dart';
+import 'views/contacts_page.dart';
 import 'views/phone_dialer.dart';
 import 'views/settings_page.dart';
 
@@ -29,12 +26,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData.light(
           useMaterial3: true,
         ),
-        darkTheme: ThemeData.dark(
-            useMaterial3:
-                true).copyWith(
-            scaffoldBackgroundColor: Colors.black,
-            
-                ) /*.copyWith(
+        darkTheme: ThemeData.dark(useMaterial3: true).copyWith(
+          scaffoldBackgroundColor: Colors.black,
+        ) /*.copyWith(
             scaffoldBackgroundColor: const Color(0xFF21152B),
             appBarTheme: const AppBarTheme(
                 elevation: 2,
@@ -53,23 +47,19 @@ class MyApp extends StatelessWidget {
                 ))*/
         ,
         themeMode: ThemeMode.system,
-        initialRoute: "/list",
+        initialRoute: "/phone",
         getPages: [
-          GetPage(name: "/", page: () => DefaultPage()),
+          // GetPage(name: "/", page: () => DefaultPage_OLD()),
           GetPage(name: "/settings", page: () => SettingsPage()),
-          GetPage(name: "/list", page: () => ListPage())
-        ]
-        /*GetPage(
-            name: "/register",
-            page: () => RegisterPage(),
-            transition: Transition.leftToRight),
-        GetPage(name: "/dialer", page: () => PhoneDialer()),
-        GetPage(
-            name: "/contacts",
-            page: () => ContactsPage(),
-            transition: Transition.rightToLeft),
-        GetPage(name: "/settings", page: () => SettingsPage())
-      ],*/
-        );
+          GetPage(name: "/phone", page: () => PhoneDialer()),
+          GetPage(
+              name: "/contacts",
+              page: () => ContactsPage(),
+              transition: Transition.rightToLeft),
+          GetPage(
+              name: "/register",
+              page: () => RegisterPage(),
+              transition: Transition.leftToRight),
+        ]);
   }
 }

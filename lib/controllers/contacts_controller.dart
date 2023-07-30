@@ -1,6 +1,3 @@
-import 'dart:math';
-
-import 'package:flutter/widgets.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/controllers/home_controller.dart';
@@ -11,10 +8,7 @@ class ContactsController extends GetxController {
   RxList<Contact> contactsFiltered = <Contact>[].obs;
   RxMap<String, List<int>> groups = <String, List<int>>{}.obs;
   RxBool isLoadingContacts = false.obs;
-  RxBool isSearching = false.obs;
-  Rx<DateTime> lastScrolled = DateTime.now().subtract(const Duration(days: 1)).obs;
-  final TextEditingController searchController = TextEditingController();
-  final ScrollController scrollController = ScrollController();
+  RxInt scrollingLetterIndex = 0.obs;
 
   @override
   onInit() async {
@@ -24,27 +18,7 @@ class ContactsController extends GetxController {
       Get.snackbar("Permission denied", "Please allow contacts permission",
           snackPosition: SnackPosition.BOTTOM);
     }
-    scrollController.addListener(reactToScroll);
     super.onInit();
-  }
-
-  reactToScroll() {
-    print("Scrooll");
-    if (scrollController.offset >= scrollController.position.maxScrollExtent &&
-        !scrollController.position.outOfRange) {
-      print("Reached the bottom");
-    }
-    if (scrollController.offset <= scrollController.position.minScrollExtent &&
-        !scrollController.position.outOfRange) {
-      print("Reached the top");
-    }
-    if (lastScrolled.value.difference(DateTime.now()).inSeconds > 1) {
-      lastScrolled = DateTime.now().obs;
-      isSearching.value = true;
-    } else if (lastScrolled.value.difference(DateTime.now()).inSeconds > 3) {
-      lastScrolled.value = DateTime.now();
-      isSearching.value = false;
-    }
   }
 
   void loadContacts() async {
@@ -67,10 +41,10 @@ class ContactsController extends GetxController {
           .where((Contact c) =>
               c.displayName.toLowerCase().contains(text.toLowerCase()))
           .toList();
-      groups.value = buildGroups();
     } else {
       contactsFiltered.value = contacts;
     }
+    groups.value = buildGroups();
   }
 
   buildGroups() {
@@ -86,15 +60,15 @@ class ContactsController extends GetxController {
     return groups;
   }
 
-  clearSearch() {
-    searchController.clear();
-    searchContacts("");
-    // loadContacts();
-  }
+  // clearSearch() {
+  //   searchController.clear();
+  //   searchContacts("");
+  //   // loadContacts();
+  // }
 
   // addFakeContacts() async {
   //   var rng = Random();
-  // 
+  //
   //   for (int i = 0; i < 10; i++) {
   //     Contact newContact = Contact()
   //       ..name.first = String.fromCharCodes(
