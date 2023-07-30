@@ -26,7 +26,7 @@ class EntriesGroupElement extends StatelessWidget {
           ),
           Container(
               width: double.infinity,
-              height: height * 10 * controller.groups[group]!.length.toDouble(),
+              height: height * 7 * controller.groups[group]!.length.toDouble(),
               decoration: BoxDecoration(
                   color: Colors.grey[900],
                   border: Border.all(

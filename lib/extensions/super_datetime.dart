@@ -48,7 +48,7 @@ bool isSameDay(int ts1, int ts2) {
   return d1.isSameDay(d2);
 }
 
-int compareDateTime(int ts1, int ts2) {
+int compareTimestamps(int ts1, int ts2) {
   DateTime d1 = DateTime.fromMillisecondsSinceEpoch(ts1);
   DateTime d2 = DateTime.fromMillisecondsSinceEpoch(ts2);
   return d1.compareTo(d2);

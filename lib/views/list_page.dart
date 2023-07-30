@@ -16,17 +16,17 @@ class ListPage extends StatelessWidget {
   final Widget scrollBar;
   final Function(String) searchFunction;
 
-  ListPage(
+  const ListPage(
       {super.key,
       required this.tag,
+      required this.listController,
       required this.title,
       required this.subtitle,
       required this.mainList,
       required this.scrollBar,
-      required this.searchFunction})
-      : listController = Get.put(ListController(), tag: tag);
+      required this.searchFunction});
 
-  SliverPersistentHeader makeHeader(String headerText, double height) {
+  SliverPersistentHeader makeHeader(double height) {
     return SliverPersistentHeader(
       pinned: true,
       delegate: SliverAppBarDelegate(
@@ -71,6 +71,7 @@ class ListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height / 100;
+    double width = MediaQuery.of(context).size.width / 100;
 
     return Stack(
       children: [
@@ -106,7 +107,7 @@ class ListPage extends StatelessWidget {
                 ],
               ),
             ),
-            makeHeader('Header Section 2', height * 8),
+            makeHeader(height * 8),
             // buildMainList(context),
             mainList,
           ],
@@ -119,22 +120,26 @@ class ListPage extends StatelessWidget {
                 bottom: 0,
                 right: MediaQuery.of(context).size.width / 2 - 25,
                 left: MediaQuery.of(context).size.width / 2 - 25,
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
+                child: Material(
+                  elevation: 20,
+                  shape: const CircleBorder(),
+                  child: Container(
+                    width: width * 10,
+                    height: width * 10,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
                       color: Colors.grey[900],
-                      border: Border.all(
-                        color: Colors.black,
-                      ),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(20))),
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_upward),
-                    onPressed: () {
-                      listController.isAtBottom.value = false;
-                      listController.moveAt(0);
-                    },
+                      border: Border.all(color: Colors.grey[700]!, width: 2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.keyboard_double_arrow_up_sharp),
+                      padding: const EdgeInsets.all(0),
+                      onPressed: () {
+                        listController.isAtBottom.value = false;
+                        listController.moveAt(0);
+                      },
+                    ),
                   ),
                 ))
             : Container())

@@ -20,7 +20,24 @@ class ListController extends GetxController {
     super.onInit();
   }
 
+  @override
+  void onClose() {
+    scrollController.removeListener(reactToScroll);
+    super.onClose();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    searchController.clear();
+    searchController.dispose();
+    isScrolling = false.obs;
+    isAtBottom = false.obs;
+    super.dispose();
+  }
+
   reactToScroll() {
+    FocusManager.instance.primaryFocus?.unfocus();
     print("Scrooll");
     if (scrollController.offset >= scrollController.position.maxScrollExtent &&
         !scrollController.position.outOfRange) {

@@ -52,20 +52,20 @@ class HomeController extends GetxController
       case RegisterPage:
         // Get.put(RegisterController());
         // Get.toNamed("/register");
-        Get.to(() => RegisterPage(), transition: transition);
+        Get.off(() => RegisterPage(), transition: transition);
         // newPage = RegisterPage(key: ValueKey<int>(0));
         // newTitle = "Register";
         break;
       case PhoneDialer:
         // Get.put(PhoneController());
         // Get.toNamed("/phone");
-        Get.to(() => PhoneDialer(), transition: transition);
+        Get.off(() => PhoneDialer(), transition: transition);
         // newPage = PhoneDialer(key: const ValueKey<int>(1));
         // newTitle = "Phone Dialer";
         break;
       case ContactsPage:
         // Get.toNamed("/contacts");
-        Get.to(() => ContactsPage(), transition: transition);
+        Get.off(() => ContactsPage(), transition: transition);
         break;
       // Get.put(ContactsController());
       // newPage = ContactsPage(key: const ValueKey<int>(2));

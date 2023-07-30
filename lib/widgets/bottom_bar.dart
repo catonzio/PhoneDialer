@@ -5,7 +5,7 @@ import '../controllers/home_controller.dart';
 import 'bottom_bar_icon.dart';
 
 class BottomBar extends StatelessWidget {
-  final HomeController controller = Get.put(HomeController());
+  final HomeController controller = Get.put(HomeController(), permanent: true);
   BottomBar({super.key});
 
   @override

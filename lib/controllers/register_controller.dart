@@ -1,8 +1,9 @@
 import 'package:call_log/call_log.dart';
 import 'package:get/get.dart';
+import 'package:phone_dialer/controllers/list_controller.dart';
 import 'package:phone_dialer/extensions/super_datetime.dart';
 
-class RegisterController extends GetxController {
+class RegisterController extends ListController {
   List<CallLogEntry> entries = <CallLogEntry>[];
   List<CallLogEntry> entriesFiltered = <CallLogEntry>[].obs;
   RxMap<DateTime, List<int>> groups = <DateTime, List<int>>{}.obs;
@@ -14,14 +15,25 @@ class RegisterController extends GetxController {
     super.onInit();
   }
 
-  void loadEntries() async {
+  void loadEntries({DateTime? dateFrom, DateTime? dateTo}) async {
     print("Loading entries");
     isLoadingEntries.value = true;
-    entries = (await CallLog.get()).toList().obs;
-    entries.sort((a, b) => compareDateTime(a.timestamp ?? 0, b.timestamp ?? 0));
-    entriesFiltered = entries;
-    isLoadingEntries.value = false;
+
+    dateFrom = dateFrom ?? DateTime.now().subtract(const Duration(days: 5));
+    dateTo = dateTo ?? DateTime.now();
+
+    List<CallLogEntry> entries =
+        (await CallLog.query(dateTimeFrom: dateFrom, dateTimeTo: dateTo))
+            .toList()
+            .obs;
+    entries
+        .sort((a, b) => compareTimestamps(a.timestamp ?? 0, b.timestamp ?? 0));
+
+    this.entries = entries.reversed.toList();
+    entriesFiltered = this.entries;
     groups.value = buildGroups();
+    isLoadingEntries.value = false;
+
     print("Entries loaded");
   }
 
@@ -48,8 +60,8 @@ class RegisterController extends GetxController {
     if (test.isNotEmpty) {
       entriesFiltered = entriesFiltered
           .where((CallLogEntry e) =>
-              e.formattedNumber!.contains(test) ||
-              e.name!.toLowerCase().contains(test.toLowerCase()))
+              (e.formattedNumber ?? "").contains(test) ||
+              (e.name ?? "").toLowerCase().contains(test.toLowerCase()))
           .toList();
     } else {
       entriesFiltered = entries;

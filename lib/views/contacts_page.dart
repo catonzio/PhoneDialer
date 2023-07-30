@@ -7,7 +7,7 @@ import 'package:phone_dialer/widgets/contact_element.dart';
 import 'package:phone_dialer/widgets/contacts_group_element.dart';
 
 class ContactsPage extends StatelessWidget {
-  final ContactsController controller = Get.put(ContactsController());
+  final ContactsController controller = Get.put(ContactsController(), permanent: true);
   ContactsPage({super.key});
 
   @override
@@ -15,6 +15,7 @@ class ContactsPage extends StatelessWidget {
     return DefaultPage(
       body: ListPage(
           tag: "contacts",
+          listController: controller,
           title: const Text(
             "Contacts",
             style: TextStyle(fontSize: 50.0, color: Colors.white),
@@ -39,14 +40,14 @@ class ContactsPage extends StatelessWidget {
             ),
           )
         : SliverToBoxAdapter(
-            child: Column(children: [
-              for (String group in controller.groups.keys.toList()..sort())
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
-                  child: ContactsGroupElement(
-                      group: group, elements: buildElementsList),
-                )
-            ]),
+            child: Obx(() => Column(children: [
+                  for (String group in controller.groups.keys.toList()..sort())
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
+                      child: ContactsGroupElement(
+                          group: group, elements: buildElementsList),
+                    )
+                ])),
           ));
   }
 
@@ -60,7 +61,7 @@ class ContactsPage extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(12 + width * 2 + height * 4, 0, 8, 0),
             child: const Divider()));
       }
-      res.add(ContactElement(contact: controller.contacts[idxs[i]], index: i));
+      res.add(ContactElement(contact: controller.contactsFiltered[idxs[i]], index: i));
     }
     return res;
   }

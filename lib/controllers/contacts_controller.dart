@@ -1,9 +1,10 @@
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/controllers/home_controller.dart';
+import 'package:phone_dialer/controllers/list_controller.dart';
 import 'package:phone_dialer/controllers/phone_controller.dart';
 
-class ContactsController extends GetxController {
+class ContactsController extends ListController {
   List<Contact> contacts = <Contact>[];
   RxList<Contact> contactsFiltered = <Contact>[].obs;
   RxMap<String, List<int>> groups = <String, List<int>>{}.obs;
