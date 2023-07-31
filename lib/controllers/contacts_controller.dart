@@ -14,11 +14,14 @@ class ContactsController extends ListController {
   @override
   onInit() async {
     if (await FlutterContacts.requestPermission()) {
-      loadContacts();
+      if (contacts.isEmpty) {
+        loadContacts();
+      }
     } else {
       Get.snackbar("Permission denied", "Please allow contacts permission",
           snackPosition: SnackPosition.BOTTOM);
     }
+    super.resetExpandableControllers(contactsFiltered);
     super.onInit();
   }
 
@@ -31,8 +34,8 @@ class ContactsController extends ListController {
         .obs;
     contacts.sort((a, b) => a.displayName.compareTo(b.displayName));
     contactsFiltered.value = contacts;
-    isLoadingContacts.value = false;
     groups.value = buildGroups();
+    isLoadingContacts.value = false;
     print("Contacts loaded");
   }
 
@@ -58,6 +61,7 @@ class ContactsController extends ListController {
         groups[firstLetter] = [i];
       }
     }
+    super.resetExpandableControllers(contactsFiltered);
     return groups;
   }
 
@@ -85,5 +89,13 @@ class ContactsController extends ListController {
     Get.back();
     Get.find<PhoneController>().setText(phone);
     Get.find<HomeController>().updateTab(1);
+  }
+
+  void setNumberForCall(int index, bool isCall) {
+    Phone? obj = contactsFiltered[index].phones.firstOrNull;
+    String num = obj == null ? "" : obj.number;
+    if (num.isNotEmpty) {
+      super.setNumber(num, isCall);
+    }
   }
 }

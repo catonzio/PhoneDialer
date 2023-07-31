@@ -12,7 +12,13 @@ class RegisterController extends ListController {
   @override
   onInit() async {
     loadEntries();
+    super.resetExpandableControllers(entriesFiltered);
     super.onInit();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   void loadEntries({DateTime? dateFrom, DateTime? dateTo}) async {
@@ -49,11 +55,14 @@ class RegisterController extends ListController {
         groups[date] = [i];
       }
     }
+    // isExpanded = List<bool>.filled(groups.length, false).obs;
+    super.resetExpandableControllers(entriesFiltered);
     return groups;
   }
 
   void removeEntry(int index) {
-    entries.removeAt(index);
+    entriesFiltered.removeAt(index);
+    groups.value = buildGroups();
   }
 
   void searchEntries(String test) {
@@ -67,5 +76,12 @@ class RegisterController extends ListController {
       entriesFiltered = entries;
     }
     groups.value = buildGroups();
+  }
+
+  void setNumberForCall(int index, bool isCall) {
+    String num = entriesFiltered[index].number ?? "";
+    if (num.isNotEmpty) {
+      super.setNumber(num, isCall);
+    }
   }
 }

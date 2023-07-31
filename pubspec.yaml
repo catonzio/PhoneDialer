@@ -39,6 +39,8 @@ dependencies:
   get: ^4.6.5
   flutter_contacts: ^1.1.7
   call_log: ^4.0.0
+  expandable: ^5.0.1
+  flutter_phone_direct_caller: ^2.1.1
   # url_launcher: ^6.1.12
   # flutter_contacts: ^1.1.7
 

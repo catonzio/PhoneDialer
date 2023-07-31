@@ -7,7 +7,8 @@ import 'package:phone_dialer/widgets/contact_element.dart';
 import 'package:phone_dialer/widgets/contacts_group_element.dart';
 
 class ContactsPage extends StatelessWidget {
-  final ContactsController controller = Get.put(ContactsController(), permanent: true);
+  final ContactsController controller =
+      Get.put(ContactsController(), permanent: true);
   ContactsPage({super.key});
 
   @override
@@ -61,7 +62,11 @@ class ContactsPage extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(12 + width * 2 + height * 4, 0, 8, 0),
             child: const Divider()));
       }
-      res.add(ContactElement(contact: controller.contactsFiltered[idxs[i]], index: i));
+      res.add(ContactElement(
+        contact: controller.contactsFiltered[idxs[i]],
+        index: i,
+        realIndex: idxs[i],
+      ));
     }
     return res;
   }

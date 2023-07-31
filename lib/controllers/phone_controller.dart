@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:get/get.dart';
 
 import 'settings_controller.dart';
@@ -21,14 +22,16 @@ class PhoneController extends GetxController {
   }
 
   setText(String text) {
+    if (text.startsWith("4146")) {
+      text = text.substring(4);
+    }
     phoneNumber.value = text;
     numberController.text = phoneNumber.value;
   }
 
   resetText() {
     print("Resetting text");
-    phoneNumber.value = "";
-    numberController.text = phoneNumber.value;
+    setText("");
   }
 
   deleteChar() {
@@ -77,11 +80,15 @@ class PhoneController extends GetxController {
     numberController.text = phoneNumber.value;
   }
 
-  makeCall() {
+  makeCall() async {
+    if (phoneNumber.value.isEmpty) return;
+
     SettingsController currentSettings = Get.find<SettingsController>();
     String number = '${currentSettings.prefix}${numberController.text},9';
-    // String number = '${numberController.text},9';
     print(number);
-    // launchUrl(Uri.parse('tel://$number'));
+    bool? res = await FlutterPhoneDirectCaller.callNumber(number);
+    if (res == null || !res) {
+      Get.snackbar("Error", "Could not make call");
+    }
   }
 }

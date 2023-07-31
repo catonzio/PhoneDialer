@@ -1,3 +1,4 @@
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/controllers/register_controller.dart';
@@ -12,7 +13,6 @@ class EntriesGroupElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height / 100;
     List<int> idxs = controller.groups[group]!;
 
     return Column(
@@ -26,7 +26,7 @@ class EntriesGroupElement extends StatelessWidget {
           ),
           Container(
               width: double.infinity,
-              height: height * 7 * controller.groups[group]!.length.toDouble(),
+              //height: height * 7 * controller.groups[group]!.length.toDouble(),
               decoration: BoxDecoration(
                   color: Colors.grey[900],
                   border: Border.all(
@@ -34,10 +34,12 @@ class EntriesGroupElement extends StatelessWidget {
                   ),
                   borderRadius: const BorderRadius.all(Radius.circular(20))),
               padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: elements(context, idxs)))
+              child: ExpandableNotifier(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: elements(context, idxs)),
+              ))
         ]);
   }
 }

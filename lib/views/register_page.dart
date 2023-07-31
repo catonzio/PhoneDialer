@@ -7,7 +7,8 @@ import 'package:phone_dialer/widgets/entries_group_element.dart';
 import 'package:phone_dialer/widgets/entry_element.dart';
 
 class RegisterPage extends StatelessWidget {
-  final RegisterController controller = Get.put(RegisterController(), permanent: true);
+  final RegisterController controller =
+      Get.put(RegisterController(), permanent: true);
   RegisterPage({super.key});
 
   @override
@@ -66,8 +67,10 @@ class RegisterPage extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(12 + width * 2 + height * 4, 0, 8, 0),
             child: const Divider()));
       }
-      res.add(
-          EntryElement(entry: controller.entriesFiltered[idxs[i]], index: i));
+      res.add(EntryElement(
+          entry: controller.entriesFiltered[idxs[i]],
+          realIndex: idxs[i],
+          index: i));
     }
     return res;
   }

@@ -9,7 +9,7 @@ class AlwaysDisabledFocusNode extends FocusNode {
 }
 
 class PhoneDialer extends StatelessWidget {
-  final PhoneController controller = Get.put(PhoneController());
+  final PhoneController controller = Get.put(PhoneController(), permanent: true);
   PhoneDialer({super.key});
 
   @override
