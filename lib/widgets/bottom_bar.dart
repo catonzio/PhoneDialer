@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../controllers/home_controller.dart';
+import '../data/controllers/home_controller.dart';
 import 'bottom_bar_icon.dart';
 
 class BottomBar extends StatelessWidget {
@@ -20,7 +20,7 @@ class BottomBar extends StatelessWidget {
                 flex: 1,
                 child: BottomBarIcon(
                   icon: const Icon(Icons.history),
-                  isActive: controller.selectedIndex.value == 0,
+                  isActive: controller.selectedIndex == 0,
                   onPressed: () => controller.updateTab(0),
                 ),
               ),
@@ -28,7 +28,7 @@ class BottomBar extends StatelessWidget {
                 flex: 1,
                 child: BottomBarIcon(
                   icon: const Icon(Icons.call),
-                  isActive: controller.selectedIndex.value == 1,
+                  isActive: controller.selectedIndex == 1,
                   onPressed: () => controller.updateTab(1),
                 ),
               ),
@@ -36,7 +36,7 @@ class BottomBar extends StatelessWidget {
                 flex: 1,
                 child: BottomBarIcon(
                   icon: const Icon(Icons.contacts),
-                  isActive: controller.selectedIndex.value == 2,
+                  isActive: controller.selectedIndex == 2,
                   onPressed: () => controller.updateTab(2),
                 ),
               ),

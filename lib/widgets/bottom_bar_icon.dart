@@ -19,7 +19,7 @@ class BottomBarIcon extends StatelessWidget {
         IconButton(
           icon: icon,
           onPressed: onPressed,
-          color: isActive ? Colors.white : const Color(0xFF4E3366),
+          // color: isActive ? Colors.white : const Color(0xFF4E3366),
         ),
         Container(
           height: 2,

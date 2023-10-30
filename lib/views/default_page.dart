@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phone_dialer/extensions/context_extensions.dart';
 import 'package:phone_dialer/widgets/bottom_bar.dart';
 
 class DefaultPage extends StatelessWidget {
@@ -9,6 +10,7 @@ class DefaultPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: context.colorScheme.background,
         body: body,
         bottomNavigationBar: BottomBar(),
       ),

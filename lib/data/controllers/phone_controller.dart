@@ -5,13 +5,16 @@ import 'package:get/get.dart';
 import 'settings_controller.dart';
 
 class PhoneController extends GetxController {
-  RxString phoneNumber = "123".obs;
+  final RxString _phoneNumber = "123".obs;
+  String get phoneNumber => _phoneNumber.value;
+  set phoneNumber(String value) => _phoneNumber.value = value;
+
   TextEditingController numberController = TextEditingController();
   int lastCursorPos = -1;
 
   @override
   void onInit() {
-    numberController.text = phoneNumber.value;
+    numberController.text = phoneNumber;
     super.onInit();
   }
 
@@ -25,8 +28,8 @@ class PhoneController extends GetxController {
     if (text.startsWith("4146")) {
       text = text.substring(4);
     }
-    phoneNumber.value = text;
-    numberController.text = phoneNumber.value;
+    phoneNumber = text;
+    numberController.text = phoneNumber;
   }
 
   resetText() {
@@ -36,24 +39,24 @@ class PhoneController extends GetxController {
 
   deleteChar() {
     print("Deleting char");
-    if (phoneNumber.value.isEmpty || numberController.selection.baseOffset == 0)
+    if (phoneNumber.isEmpty || numberController.selection.baseOffset == 0) {
       return;
+    }
     if (numberController.selection.baseOffset != lastCursorPos) {
       lastCursorPos = numberController.selection.baseOffset;
     }
     if (lastCursorPos == -1) {
-      phoneNumber.value =
-          phoneNumber.value.substring(0, phoneNumber.value.length - 1);
+      phoneNumber = phoneNumber.substring(0, phoneNumber.length - 1);
     } else {
-      phoneNumber.value = phoneNumber.value.substring(0, lastCursorPos - 1) +
-          (lastCursorPos < phoneNumber.value.length
-              ? phoneNumber.value.substring(lastCursorPos)
+      phoneNumber = phoneNumber.substring(0, lastCursorPos - 1) +
+          (lastCursorPos < phoneNumber.length
+              ? phoneNumber.substring(lastCursorPos)
               : '0');
       lastCursorPos--;
     }
-    // phoneNumber.value =
-    //     phoneNumber.value.substring(0, phoneNumber.value.length - 1);
-    numberController.text = phoneNumber.value;
+    // phoneNumber =
+    //     phoneNumber.substring(0, phoneNumber.length - 1);
+    numberController.text = phoneNumber;
   }
 
   addNumber(dynamic number) {
@@ -62,26 +65,25 @@ class PhoneController extends GetxController {
     String n = number.toString();
     if (idx == 0) {
       // the cursor is at the beginning
-      phoneNumber.value = n + phoneNumber.value;
+      phoneNumber = n + phoneNumber;
     } else if (idx < 0) {
       // the cursor is at the end
-      phoneNumber.value = phoneNumber.value + n;
+      phoneNumber = phoneNumber + n;
       lastCursorPos = -1;
     } else if (idx > 0) {
       if (lastCursorPos != -1) {
         idx = lastCursorPos;
       }
       // the cursor is in the middle
-      phoneNumber.value = phoneNumber.value.substring(0, idx) +
-          n +
-          phoneNumber.value.substring(idx);
+      phoneNumber =
+          phoneNumber.substring(0, idx) + n + phoneNumber.substring(idx);
       lastCursorPos = idx;
     }
-    numberController.text = phoneNumber.value;
+    numberController.text = phoneNumber;
   }
 
   makeCall() async {
-    if (phoneNumber.value.isEmpty) return;
+    if (phoneNumber.isEmpty) return;
 
     SettingsController currentSettings = Get.find<SettingsController>();
     String number = '${currentSettings.prefix}${numberController.text},9';

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:phone_dialer/controllers/register_controller.dart';
+import 'package:phone_dialer/data/controllers/register_controller.dart';
 import 'package:phone_dialer/views/default_page.dart';
 import 'package:phone_dialer/views/list_page.dart';
 import 'package:phone_dialer/widgets/entries_group_element.dart';
 import 'package:phone_dialer/widgets/entry_element.dart';
 
 class RegisterPage extends StatelessWidget {
-  final RegisterController controller =
-      Get.put(RegisterController(), permanent: true);
+  final RegisterController controller = Get.find<RegisterController>();
   RegisterPage({super.key});
 
   @override
@@ -19,13 +18,13 @@ class RegisterPage extends StatelessWidget {
       listController: controller,
       title: const Text(
         "Call logs",
-        style: TextStyle(fontSize: 50.0, color: Colors.white),
+        style: TextStyle(fontSize: 50.0),
       ),
       subtitle: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
             "There are ${controller.entries.length} call logs",
-            style: const TextStyle(fontSize: 15.0, color: Colors.white),
+            style: const TextStyle(fontSize: 15.0),
           )),
       mainList: buildMainList(context),
       scrollBar: Container(),
@@ -34,7 +33,7 @@ class RegisterPage extends StatelessWidget {
   }
 
   Widget buildMainList(BuildContext context) {
-    return Obx(() => controller.isLoadingEntries.value
+    return Obx(() => controller.isLoadingEntries
         ? const SliverToBoxAdapter(
             child: Center(
               child: CircularProgressIndicator(),

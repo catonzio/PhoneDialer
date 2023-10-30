@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:phone_dialer/controllers/settings_controller.dart';
+import 'package:phone_dialer/data/controllers/settings_controller.dart';
 
 class SettingsPage extends StatelessWidget {
   final SettingsController controller = Get.find<SettingsController>();
@@ -38,7 +38,7 @@ class SettingsPage extends StatelessWidget {
               children: [
                 const Text("Dark Mode", style: TextStyle(fontSize: 20)),
                 Obx(() => Switch(
-                      value: controller.isDarkMode.value,
+                      value: controller.isDarkMode,
                       onChanged: (value) => controller.toggleDarkMode(),
                     ))
               ],
@@ -48,7 +48,7 @@ class SettingsPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text("Prefix", style: TextStyle(fontSize: 20)),
-                Container(
+                SizedBox(
                   width: width * 20,
                   child: TextField(
                     controller: controller.prefixController,

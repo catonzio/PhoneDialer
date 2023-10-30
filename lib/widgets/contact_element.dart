@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
-import 'package:phone_dialer/controllers/contacts_controller.dart';
+import 'package:phone_dialer/data/controllers/contacts_controller.dart';
 import 'dart:math' as math;
 
 import 'package:phone_dialer/widgets/expandable_element.dart';
@@ -26,7 +25,7 @@ class ContactElement extends StatelessWidget {
     return ExpandableElement(
         header: buildHeader(context),
         bodyFirstLine: Container(),
-        bodySecondLine: Text("Cellulare ${num}",
+        bodySecondLine: Text("Cellulare $num",
             style: const TextStyle(fontWeight: FontWeight.bold)),
         bodyThirdLine: buildBody(context),
         realIndex: realIndex,
@@ -53,13 +52,13 @@ class ContactElement extends StatelessWidget {
                         Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
                             .withOpacity(1.0),
                     border: Border.all(
-                      color: Colors.black,
-                    ),
+                        // color: Colors.black,
+                        ),
                     borderRadius: const BorderRadius.all(Radius.circular(20))),
                 child: Center(
                   child: Text(
                     contact.displayName[0],
-                    style: const TextStyle(color: Colors.white, fontSize: 20),
+                    style: const TextStyle(fontSize: 20),
                   ),
                 ),
               ),

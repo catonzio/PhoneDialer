@@ -7,15 +7,32 @@ import 'package:get/get.dart';
 import 'home_controller.dart';
 import 'phone_controller.dart';
 
-class ListController extends GetxController {
-  RxBool isScrolling = false.obs;
-  RxBool isAtBottom = false.obs;
-  Rx<DateTime> lastScrolled =
+abstract class ListController extends GetxController {
+  final RxBool _isScrolling = false.obs;
+  bool get isScrolling => _isScrolling.value;
+  set isScrolling(bool value) => _isScrolling.value = value;
+
+  final RxBool _isAtBottom = false.obs;
+  bool get isAtBottom => _isAtBottom.value;
+  set isAtBottom(bool value) => _isAtBottom.value = value;
+
+  final Rx<DateTime> _lastScrolled =
       DateTime.now().subtract(const Duration(days: 1)).obs;
+  DateTime get lastScrolled => _lastScrolled.value;
+  set lastScrolled(DateTime value) => _lastScrolled.value = value;
+
   Timer? scrollingTimer;
-  RxBool isSearching = false.obs;
-  List<ExpandableController> expandableControllers =
+
+  final RxBool _isSearching = false.obs;
+  bool get isSearching => _isSearching.value;
+  set isSearching(bool value) => _isSearching.value = value;
+
+  final RxList<ExpandableController> _expandableControllers =
       <ExpandableController>[].obs;
+  List<ExpandableController> get expandableControllers =>
+      _expandableControllers;
+  set expandableControllers(List<ExpandableController> value) =>
+      _expandableControllers.value = value;
 
   final TextEditingController searchController = TextEditingController();
   final ScrollController scrollController = ScrollController();
@@ -41,8 +58,8 @@ class ListController extends GetxController {
     scrollController.dispose();
     searchController.clear();
     searchController.dispose();
-    isScrolling = false.obs;
-    isAtBottom = false.obs;
+    isScrolling = false;
+    isAtBottom = false;
     for (var controller in expandableControllers) {
       controller.value = false;
       controller.dispose();
@@ -74,19 +91,19 @@ class ListController extends GetxController {
     if (scrollController.offset >= scrollController.position.maxScrollExtent &&
         !scrollController.position.outOfRange) {
       print("Reached the bottom");
-      isAtBottom.value = true;
+      isAtBottom = true;
     }
     if (scrollController.offset <= scrollController.position.minScrollExtent &&
         !scrollController.position.outOfRange) {
       print("Reached the top");
     }
-    if (DateTime.now().difference(lastScrolled.value).inSeconds > 1) {
-      lastScrolled = DateTime.now().obs;
-      isScrolling.value = true;
-      isAtBottom.value = false;
+    if (DateTime.now().difference(lastScrolled).inSeconds > 1) {
+      lastScrolled = DateTime.now();
+      isScrolling = true;
+      isAtBottom = false;
       scrollingTimer?.cancel();
       scrollingTimer = Timer(const Duration(seconds: 5), () {
-        isScrolling.value = false;
+        isScrolling = false;
       });
     }
   }
@@ -106,5 +123,9 @@ class ListController extends GetxController {
     if (call) {
       phoneController.makeCall();
     }
+  }
+
+  void clearText() {
+    searchController.clear();
   }
 }

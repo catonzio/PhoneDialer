@@ -1,7 +1,8 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:phone_dialer/controllers/register_controller.dart';
+import 'package:phone_dialer/data/controllers/register_controller.dart';
+import 'package:phone_dialer/extensions/context_extensions.dart';
 import 'package:phone_dialer/extensions/super_datetime.dart';
 
 class EntriesGroupElement extends StatelessWidget {
@@ -15,31 +16,35 @@ class EntriesGroupElement extends StatelessWidget {
   Widget build(BuildContext context) {
     List<int> idxs = controller.groups[group]!;
 
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text("${group.day} ${group.monthToWord()}",
-                style: const TextStyle(color: Colors.white)),
-          ),
-          Container(
-              width: double.infinity,
-              //height: height * 7 * controller.groups[group]!.length.toDouble(),
-              decoration: BoxDecoration(
-                  color: Colors.grey[900],
-                  border: Border.all(
-                    color: Colors.black,
-                  ),
-                  borderRadius: const BorderRadius.all(Radius.circular(20))),
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: ExpandableNotifier(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: elements(context, idxs)),
-              ))
-        ]);
+    return Material(
+      elevation: 10,
+      color: Colors.transparent,
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Text("${group.day} ${group.monthToWord()}"),
+            ),
+            Container(
+                width: double.infinity,
+                //height: height * 7 * controller.groups[group]!.length.toDouble(),
+                decoration: BoxDecoration(
+                    // color: Colors.grey[900],
+                    color: context.colorScheme.surface,
+                    border: Border.all(
+                        // color: Colors.black,
+                        ),
+                    borderRadius: const BorderRadius.all(Radius.circular(20))),
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: ExpandableNotifier(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: elements(context, idxs)),
+                ))
+          ]),
+    );
   }
 }

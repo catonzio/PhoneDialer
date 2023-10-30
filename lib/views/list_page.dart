@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:phone_dialer/controllers/list_controller.dart';
+import 'package:phone_dialer/data/controllers/list_controller.dart';
+import 'package:phone_dialer/extensions/context_extensions.dart';
 //import '../widgets/sliver_app_bar_delegate.dart';
 //import 'package:phone_dialer/widgets/sliver_app_bar_delegate.dart';
 
@@ -26,45 +27,50 @@ class ListPage extends StatelessWidget {
       required this.scrollBar,
       required this.searchFunction});
 
-  SliverPersistentHeader makeHeader(double height) {
+  SliverPersistentHeader makeHeader(BuildContext context, double height) {
     return SliverPersistentHeader(
       pinned: true,
       delegate: SliverAppBarDelegate(
           minHeight: height,
           maxHeight: height,
           child: Container(
-              color: Colors.black,
-              child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                Obx(() => listController.isSearching.value
-                    ? Expanded(
-                        child: Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                            child: TextField(
-                                controller: listController.searchController,
-                                onChanged: (text) => searchFunction(text),
-                                decoration: const InputDecoration(
-                                    border: UnderlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.red)),
-                                    hintText: "Search",
-                                    prefixIcon: Icon(Icons.search)))))
-                    : Container()),
-                IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () {
-                    listController.isSearching.value =
-                        !listController.isSearching.value;
-                    print(
-                        "Search button pressed: ${listController.isSearching.value}");
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.more_vert),
-                  onPressed: () {
-                    print("More button pressed");
-                  },
-                ),
-              ]))),
+            color: context.colorScheme.background,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Obx(() => listController.isSearching
+                      ? Expanded(
+                          child: Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                              child: TextField(
+                                  controller: listController.searchController,
+                                  autofocus: true,
+                                  onChanged: (text) => searchFunction(text),
+                                  decoration: InputDecoration(
+                                      hintText: "Search",
+                                      prefixIcon: IconButton(
+                                          onPressed: () =>
+                                              listController.clearText(),
+                                          icon: const Icon(
+                                              Icons.cancel_outlined))))))
+                      : Container()),
+                  IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () {
+                      listController.isSearching = !listController.isSearching;
+                      print(
+                          "Search button pressed: ${listController.isSearching}");
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.more_vert),
+                    onPressed: () {
+                      print("More button pressed");
+                    },
+                  ),
+                ]),
+          )),
     );
   }
 
@@ -86,36 +92,21 @@ class ListPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        title,
-                        subtitle
-                        // Text(
-                        //   title,
-                        //   style: const TextStyle(
-                        //       fontSize: 50.0, color: Colors.white),
-                        // ),
-                        // Padding(
-                        //     padding: const EdgeInsets.all(8.0),
-                        //     child: Text(
-                        //       subtitle,
-                        //       style: const TextStyle(
-                        //           fontSize: 15.0, color: Colors.white),
-                        //     ))
-                      ],
+                      children: [title, subtitle],
                     ),
                   )
                 ],
               ),
             ),
-            makeHeader(height * 8),
+            makeHeader(context, height * 8),
             // buildMainList(context),
             mainList,
           ],
         ),
-        Obx(() => listController.isScrolling.value
+        Obx(() => listController.isScrolling
             ? Positioned(right: 0, top: 0, bottom: 0, child: scrollBar)
             : Container()),
-        Obx(() => listController.isAtBottom.value
+        Obx(() => listController.isAtBottom
             ? Positioned(
                 bottom: 0,
                 right: MediaQuery.of(context).size.width / 2 - 25,
@@ -127,16 +118,16 @@ class ListPage extends StatelessWidget {
                     width: width * 10,
                     height: width * 10,
                     alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[900],
-                      border: Border.all(color: Colors.grey[700]!, width: 2),
+                    decoration: const BoxDecoration(
+                      // color: Colors.grey[900],
+                      // border: Border.all(color: Colors.grey[700]!, width: 2),
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
                       icon: const Icon(Icons.keyboard_double_arrow_up_sharp),
                       padding: const EdgeInsets.all(0),
                       onPressed: () {
-                        listController.isAtBottom.value = false;
+                        listController.isAtBottom = false;
                         listController.moveAt(0);
                       },
                     ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:phone_dialer/controllers/phone_controller.dart';
+import 'package:phone_dialer/data/controllers/phone_controller.dart';
 import 'package:phone_dialer/views/default_page.dart';
 
 class AlwaysDisabledFocusNode extends FocusNode {
@@ -9,7 +9,7 @@ class AlwaysDisabledFocusNode extends FocusNode {
 }
 
 class PhoneDialer extends StatelessWidget {
-  final PhoneController controller = Get.put(PhoneController(), permanent: true);
+  final PhoneController controller = Get.find<PhoneController>();
   PhoneDialer({super.key});
 
   @override
@@ -19,13 +19,13 @@ class PhoneDialer extends StatelessWidget {
     print("height: ${height * 100}, width: ${width * 100}");
     print(
         "rapporto: ${width / height * 100}, ${height / width * 100}, ${1080 / 720}, ${16 / 9}");
+
     return DefaultPage(
       body: Center(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          //SizedBox(height: 200,),
           Padding(
             padding: EdgeInsets.fromLTRB(width * 15, 0, width * 15, height * 4),
             child: TextField(
@@ -34,20 +34,20 @@ class PhoneDialer extends StatelessWidget {
               controller: controller.numberController,
               maxLines: 1,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 30),
-              decoration: const InputDecoration(),
+              style: context.theme.textTheme.displaySmall,
+              decoration: const InputDecoration(border: InputBorder.none),
             ),
           ),
           AspectRatio(
             aspectRatio: 3 / 2,
             child: SizedBox(
-              height: height * 40,
+              height: height * 50,
               child: GridView.count(
-                  padding: EdgeInsets.fromLTRB(width * 15, 0, width * 15, 0),
-                  childAspectRatio: 1.5,
+                  padding: EdgeInsets.fromLTRB(width * 6, 0, width * 6, 0),
+                  childAspectRatio: 1.8,
                   physics: const NeverScrollableScrollPhysics(),
                   crossAxisCount: 3,
-                  children: generateButtons()),
+                  children: generateButtons(context)),
             ),
           ),
           SizedBox(
@@ -56,12 +56,11 @@ class PhoneDialer extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   AnimatedSwitcher(
-                    duration: Duration(milliseconds: 10000),
+                    duration: const Duration(milliseconds: 10000),
                     child: Obx(() => IconButton(
-                          key:
-                              ValueKey(controller.phoneNumber.value.isNotEmpty),
+                          key: ValueKey(controller.phoneNumber.isNotEmpty),
                           icon: Icon(Icons.delete,
-                              color: controller.phoneNumber.value.isNotEmpty
+                              color: controller.phoneNumber.isNotEmpty
                                   ? Colors.red[900]
                                   : Colors.transparent),
                           onPressed: () => controller.resetText(),
@@ -81,7 +80,7 @@ class PhoneDialer extends StatelessWidget {
                   ),
                   Obx(() => IconButton(
                         icon: Icon(Icons.backspace,
-                            color: controller.phoneNumber.value.isNotEmpty
+                            color: controller.phoneNumber.isNotEmpty
                                 ? Colors.red[900]
                                 : Colors.transparent),
                         onPressed: () => controller.deleteChar(),
@@ -93,38 +92,39 @@ class PhoneDialer extends StatelessWidget {
     );
   }
 
-  generateButtons() {
+  generateButtons(BuildContext context) {
     List<Widget> buttons = <Widget>[];
     for (int i = 1; i < 10; i++) {
       buttons.add(Center(
         child: TextButton(
             child: Text(
               '$i',
-              style: const TextStyle(fontSize: 20),
+              style: context.theme.textTheme.headlineMedium,
+              // style: const TextStyle(fontSize: 20),
             ),
             onPressed: () => controller.addNumber(i)),
       ));
     }
     buttons.add(Center(
       child: TextButton(
-          child: const Text(
+          child: Text(
             '*',
-            style: TextStyle(fontSize: 20),
+            style: context.theme.textTheme.headlineMedium,
           ),
           onPressed: () => controller.addNumber('*')),
     ));
     buttons.add(Center(
       child: TextButton(
-        child: const Column(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               '0',
-              style: TextStyle(fontSize: 20),
+              style: context.theme.textTheme.headlineSmall,
             ),
             Text(
               '+',
-              style: TextStyle(fontSize: 10),
+              style: context.theme.textTheme.bodyLarge,
             )
           ],
         ),
@@ -134,9 +134,9 @@ class PhoneDialer extends StatelessWidget {
     ));
     buttons.add(Center(
       child: TextButton(
-          child: const Text(
+          child: Text(
             '#',
-            style: TextStyle(fontSize: 20),
+            style: context.theme.textTheme.headlineMedium,
           ),
           onPressed: () => controller.addNumber('#')),
     ));

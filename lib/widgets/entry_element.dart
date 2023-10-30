@@ -1,9 +1,7 @@
 import 'package:call_log/call_log.dart';
-import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:phone_dialer/controllers/list_controller.dart';
-import 'package:phone_dialer/controllers/register_controller.dart';
+import 'package:phone_dialer/data/controllers/register_controller.dart';
 
 import 'expandable_element.dart';
 
@@ -116,4 +114,3 @@ class EntryElement extends StatelessWidget {
     );
   }
 }
-

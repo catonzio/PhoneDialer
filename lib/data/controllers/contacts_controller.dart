@@ -1,20 +1,33 @@
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
-import 'package:phone_dialer/controllers/home_controller.dart';
-import 'package:phone_dialer/controllers/list_controller.dart';
-import 'package:phone_dialer/controllers/phone_controller.dart';
+import 'package:phone_dialer/data/controllers/home_controller.dart';
+import 'package:phone_dialer/data/controllers/list_controller.dart';
+import 'package:phone_dialer/data/controllers/phone_controller.dart';
 
 class ContactsController extends ListController {
   List<Contact> contacts = <Contact>[];
-  RxList<Contact> contactsFiltered = <Contact>[].obs;
-  RxMap<String, List<int>> groups = <String, List<int>>{}.obs;
-  RxBool isLoadingContacts = false.obs;
-  RxInt scrollingLetterIndex = 0.obs;
+
+  final RxList<Contact> _contactsFiltered = <Contact>[].obs;
+  List<Contact> get contactsFiltered => _contactsFiltered;
+  set contactsFiltered(List<Contact> value) => _contactsFiltered.value = value;
+
+  final RxMap<String, List<int>> _groups = <String, List<int>>{}.obs;
+  Map<String, List<int>> get groups => _groups;
+  set groups(Map<String, List<int>> value) => _groups.value = value;
+
+  final RxBool _isLoadingContacts = false.obs;
+  bool get isLoadingContacts => _isLoadingContacts.value;
+  set isLoadingContacts(bool value) => _isLoadingContacts.value = value;
+
+  final RxInt _scrollingLetterIndex = 0.obs;
+  int get scrollingLetterIndex => _scrollingLetterIndex.value;
+  set scrollingLetterIndex(int value) => _scrollingLetterIndex.value = value;
 
   @override
   onInit() async {
     if (await FlutterContacts.requestPermission()) {
       if (contacts.isEmpty) {
+        isLoadingContacts = true;
         loadContacts();
       }
     } else {
@@ -27,28 +40,31 @@ class ContactsController extends ListController {
 
   void loadContacts() async {
     print("Loading contacts");
-    isLoadingContacts.value = true;
-    contacts = (await FlutterContacts.getContacts(withProperties: true))
-        .where((Contact c) => !c.isBlank! && c.displayName.isNotEmpty)
-        .toList()
-        .obs;
-    contacts.sort((a, b) => a.displayName.compareTo(b.displayName));
-    contactsFiltered.value = contacts;
-    groups.value = buildGroups();
-    isLoadingContacts.value = false;
-    print("Contacts loaded");
+    FlutterContacts.getContacts(withProperties: true).then((contacts) {
+      contacts = contacts
+          .where((Contact c) => !c.isBlank! && c.displayName.isNotEmpty)
+          .toList()
+          // .sublist(0, 100)
+          .obs;
+      contacts.sort((a, b) => a.displayName.compareTo(b.displayName));
+      this.contacts = contacts;
+      contactsFiltered = contacts;
+      groups = buildGroups();
+      isLoadingContacts = false;
+    });
   }
 
   searchContacts(String text) {
     if (text.isNotEmpty) {
-      contactsFiltered.value = contactsFiltered
-          .where((Contact c) =>
-              c.displayName.toLowerCase().contains(text.toLowerCase()))
-          .toList();
+      contactsFiltered =
+          (contactsFiltered.isNotEmpty ? contactsFiltered : contacts)
+              .where((Contact c) =>
+                  c.displayName.toLowerCase().contains(text.toLowerCase()))
+              .toList();
     } else {
-      contactsFiltered.value = contacts;
+      contactsFiltered = contacts;
     }
-    groups.value = buildGroups();
+    groups = buildGroups();
   }
 
   buildGroups() {
@@ -97,5 +113,11 @@ class ContactsController extends ListController {
     if (num.isNotEmpty) {
       super.setNumber(num, isCall);
     }
+  }
+
+  @override
+  void clearText() {
+    super.clearText();
+    searchContacts("");
   }
 }

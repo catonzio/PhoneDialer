@@ -1,7 +1,7 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:phone_dialer/controllers/list_controller.dart';
+import 'package:phone_dialer/data/controllers/list_controller.dart';
 
 class ExpandableElement extends StatelessWidget {
   final Widget header;
@@ -30,6 +30,7 @@ class ExpandableElement extends StatelessWidget {
       child: Obx(() => Expandable(
             controller: controller.expandableControllers[realIndex],
             collapsed: GestureDetector(
+              behavior: HitTestBehavior.translucent,
               onTap: () {
                 controller.updateExpandableController(realIndex, true);
                 // controller.expandableControllers[realIndex].toggle();
@@ -37,6 +38,7 @@ class ExpandableElement extends StatelessWidget {
               child: header,
             ),
             expanded: GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: () {
                   controller.updateExpandableController(realIndex, false);
                   // controller.expandableControllers[realIndex].toggle();
