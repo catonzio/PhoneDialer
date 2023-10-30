@@ -46,24 +46,16 @@ class EntryElement extends StatelessWidget {
   }
 
   Widget getLeading() {
-    switch (entry.callType) {
-      case CallType.incoming:
-        return const Icon(Icons.phone_callback);
-      case CallType.missed:
-        return const Icon(Icons.phone_missed);
-      case CallType.outgoing:
-        return const Icon(Icons.phone_forwarded);
-      case CallType.rejected:
-        return const Icon(Icons.phone_disabled);
-      case CallType.blocked:
-        return const Icon(Icons.block);
-      case CallType.voiceMail:
-        return const Icon(Icons.voicemail);
-      case CallType.answeredExternally:
-        return const Icon(Icons.phone_forwarded);
-      default:
-        return Container();
-    }
+    Map<CallType, Icon> callsMapIcons = {
+      CallType.incoming: const Icon(Icons.phone_callback),
+      CallType.missed: const Icon(Icons.phone_missed),
+      CallType.outgoing: const Icon(Icons.phone_forwarded),
+      CallType.rejected: const Icon(Icons.phone_disabled),
+      CallType.blocked: const Icon(Icons.block),
+      CallType.voiceMail: const Icon(Icons.voicemail),
+      CallType.answeredExternally: const Icon(Icons.phone_forwarded),
+    };
+    return callsMapIcons[entry.callType] ?? Container();
   }
 
   Widget buildHeader(BuildContext context, DateTime callDt) {
