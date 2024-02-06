@@ -1,7 +1,7 @@
 import 'package:call_log/call_log.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/data/controllers/list_controller.dart';
-import 'package:phone_dialer/extensions/super_datetime.dart';
+import 'package:phone_dialer/utils/extensions/super_datetime.dart';
 
 class RegisterController extends ListController {
   List<CallLogEntry> entries = <CallLogEntry>[];
@@ -21,31 +21,30 @@ class RegisterController extends ListController {
 
   @override
   onInit() async {
+    super.onInit();
     loadEntries();
     super.resetExpandableControllers(entriesFiltered);
-    super.onInit();
+    debounce(super.searchText, (callback) => searchEntries(callback));
   }
 
   void loadEntries({DateTime? dateFrom, DateTime? dateTo}) async {
     print("Loading entries");
     isLoadingEntries = true;
 
-    dateFrom = dateFrom ?? DateTime.now().subtract(const Duration(days: 5));
+    dateFrom = dateFrom ?? DateTime.now().subtract(const Duration(days: 180));
     dateTo = dateTo ?? DateTime.now();
 
-    List<CallLogEntry> entries =
-        (await CallLog.query(dateTimeFrom: dateFrom, dateTimeTo: dateTo))
-            .toList()
-            .obs;
-    entries
-        .sort((a, b) => compareTimestamps(a.timestamp ?? 0, b.timestamp ?? 0));
+    CallLog.query(dateTimeFrom: dateFrom, dateTimeTo: dateTo).then((entries) {
+      // entries.toList().sort(
+      //     (a, b) => compareTimestamps(a.timestamp ?? 0, b.timestamp ?? 0));
 
-    this.entries = entries.reversed.toList();
-    entriesFiltered = this.entries;
-    groups = buildGroups();
-    isLoadingEntries = false;
+      this.entries = entries.toList(); // entries.toList().reversed.toList();
+      entriesFiltered = this.entries;
+      groups = buildGroups();
+      isLoadingEntries = false;
 
-    print("Entries loaded");
+      print("Entries loaded");
+    });
   }
 
   Map<DateTime, List<int>> buildGroups() {
@@ -70,13 +69,13 @@ class RegisterController extends ListController {
     groups = buildGroups();
   }
 
-  void searchEntries(String test) {
-    if (test.isNotEmpty) {
+  void searchEntries(String text) {
+    if (text.isNotEmpty) {
       entriesFiltered = entriesFiltered
           .where((CallLogEntry e) =>
-              (e.number ?? "").contains(test) ||
-              (e.formattedNumber ?? "").contains(test) ||
-              (e.name ?? "").toLowerCase().contains(test.toLowerCase()))
+              (e.number ?? "").contains(text) ||
+              (e.formattedNumber ?? "").contains(text) ||
+              (e.name ?? "").toLowerCase().contains(text.toLowerCase()))
           .toList();
     } else {
       entriesFiltered = entries;

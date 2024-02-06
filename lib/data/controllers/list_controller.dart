@@ -1,4 +1,5 @@
 import 'dart:async';
+// import 'dart:js';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,9 @@ abstract class ListController extends GetxController {
   set expandableControllers(List<ExpandableController> value) =>
       _expandableControllers.value = value;
 
-  final TextEditingController searchController = TextEditingController();
+  final RxString searchText = "".obs;
+
+  // final TextEditingController searchController = TextEditingController();
   final ScrollController scrollController = ScrollController();
 
   @override
@@ -56,8 +59,9 @@ abstract class ListController extends GetxController {
   @override
   void dispose() {
     scrollController.dispose();
-    searchController.clear();
-    searchController.dispose();
+    // searchController.clear();
+    // searchController.dispose();
+    searchText.value = "";
     isScrolling = false;
     isAtBottom = false;
     for (var controller in expandableControllers) {
@@ -87,15 +91,21 @@ abstract class ListController extends GetxController {
 
   reactToScroll() {
     FocusManager.instance.primaryFocus?.unfocus();
-    print("Scrooll");
-    if (scrollController.offset >= scrollController.position.maxScrollExtent &&
+    // print("Scrooll");
+    // if (scrollController.offset >= scrollController.position.maxScrollExtent &&
+    //     !scrollController.position.outOfRange) {
+    //   print("Reached the bottom");
+    //   isAtBottom = true;
+    // }
+    if (scrollController.offset >= 200 &&
         !scrollController.position.outOfRange) {
-      print("Reached the bottom");
+      // print("Reached the bottom");
       isAtBottom = true;
     }
     if (scrollController.offset <= scrollController.position.minScrollExtent &&
         !scrollController.position.outOfRange) {
-      print("Reached the top");
+      isAtBottom = false;
+      // print("Reached the top");
     }
     if (DateTime.now().difference(lastScrolled).inSeconds > 1) {
       lastScrolled = DateTime.now();
@@ -104,6 +114,7 @@ abstract class ListController extends GetxController {
       scrollingTimer?.cancel();
       scrollingTimer = Timer(const Duration(seconds: 5), () {
         isScrolling = false;
+        isAtBottom = false;
       });
     }
   }
@@ -126,6 +137,8 @@ abstract class ListController extends GetxController {
   }
 
   void clearText() {
-    searchController.clear();
+    // searchController.clear();
+    searchText.value = "";
+    isSearching = false;
   }
 }

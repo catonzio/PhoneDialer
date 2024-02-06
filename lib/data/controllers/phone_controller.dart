@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:get/get.dart';
+import 'package:phone_dialer/utils/utility.dart';
 
 import 'settings_controller.dart';
 
@@ -25,9 +26,7 @@ class PhoneController extends GetxController {
   }
 
   setText(String text) {
-    if (text.startsWith("4146")) {
-      text = text.substring(4);
-    }
+    text = clearPhoneNumber(text);
     phoneNumber = text;
     numberController.text = phoneNumber;
   }

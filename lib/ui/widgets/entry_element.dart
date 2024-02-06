@@ -2,6 +2,7 @@ import 'package:call_log/call_log.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/data/controllers/register_controller.dart';
+import 'package:phone_dialer/utils/utility.dart';
 
 import 'expandable_element.dart';
 
@@ -22,42 +23,37 @@ class EntryElement extends StatelessWidget {
   Widget build(BuildContext context) {
     final RegisterController controller = Get.find<RegisterController>();
 
-    DateTime callDt = DateTime.fromMillisecondsSinceEpoch(entry.timestamp ?? 0);
     String minutes = ((entry.duration ?? 0) ~/ 60).toString().padLeft(2, '0');
     String seconds = ((entry.duration ?? 0) % 60).toString().padLeft(2, '0');
 
-    Widget header = buildHeader(context, callDt);
     Widget bodyFirstLine = entry.name != null
-        ? Text("Cellulare ${entry.number ?? ""}",
+        ? Text("Cellulare ${clearPhoneNumber(entry.number ?? "")}",
             style: const TextStyle(fontWeight: FontWeight.bold))
         : Container();
     Widget bodySecondLine =
-        Text("${entry.callType.toString()} $minutes:$seconds");
-    Widget bodyThirdLine = buildBody(context, controller);
+        Text("${entry.callType?.name.capitalizeFirst ?? ''} $minutes:$seconds");
 
     return ExpandableElement(
-        header: header,
+        header: EntryElementHeader(
+          entry: entry,
+        ),
         bodyFirstLine: bodyFirstLine,
         bodySecondLine: bodySecondLine,
-        bodyThirdLine: bodyThirdLine,
+        bodyThirdLine: EntryElementBody(realIndex: realIndex),
         realIndex: realIndex,
         controller: controller);
   }
+}
 
-  Widget getLeading() {
-    Map<CallType, Icon> callsMapIcons = {
-      CallType.incoming: const Icon(Icons.phone_callback),
-      CallType.missed: const Icon(Icons.phone_missed),
-      CallType.outgoing: const Icon(Icons.phone_forwarded),
-      CallType.rejected: const Icon(Icons.phone_disabled),
-      CallType.blocked: const Icon(Icons.block),
-      CallType.voiceMail: const Icon(Icons.voicemail),
-      CallType.answeredExternally: const Icon(Icons.phone_forwarded),
-    };
-    return callsMapIcons[entry.callType] ?? Container();
-  }
+class EntryElementHeader extends StatelessWidget {
+  final CallLogEntry entry;
 
-  Widget buildHeader(BuildContext context, DateTime callDt) {
+  const EntryElementHeader({super.key, required this.entry});
+
+  @override
+  Widget build(BuildContext context) {
+    DateTime callDt = DateTime.fromMillisecondsSinceEpoch(entry.timestamp ?? 0);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
@@ -65,7 +61,7 @@ class EntryElement extends StatelessWidget {
           Container(
               padding: const EdgeInsets.only(right: 16), child: getLeading()),
           Text(
-            entry.name ?? entry.number ?? "",
+            entry.name ?? clearPhoneNumber(entry.number ?? ""),
             style: const TextStyle(fontSize: 18),
           ),
           const Spacer(),
@@ -76,7 +72,28 @@ class EntryElement extends StatelessWidget {
     );
   }
 
-  Widget buildBody(BuildContext context, RegisterController controller) {
+  Widget getLeading() {
+    const Map<CallType, Icon> callsMapIcons = {
+      CallType.incoming: Icon(Icons.phone_callback),
+      CallType.missed: Icon(Icons.phone_missed),
+      CallType.outgoing: Icon(Icons.phone_forwarded),
+      CallType.rejected: Icon(Icons.phone_disabled),
+      CallType.blocked: Icon(Icons.block),
+      CallType.voiceMail: Icon(Icons.voicemail),
+      CallType.answeredExternally: Icon(Icons.phone_forwarded),
+    };
+    return callsMapIcons[entry.callType] ?? Container();
+  }
+}
+
+class EntryElementBody extends StatelessWidget {
+  final int realIndex;
+
+  const EntryElementBody({super.key, required this.realIndex});
+
+  @override
+  Widget build(BuildContext context) {
+    final RegisterController controller = Get.find<RegisterController>();
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(

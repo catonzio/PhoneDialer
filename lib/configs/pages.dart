@@ -4,9 +4,9 @@ import 'package:phone_dialer/data/bindings/contacts_binding.dart';
 import 'package:phone_dialer/data/bindings/phone_binding.dart';
 import 'package:phone_dialer/data/bindings/register_binding.dart';
 import 'package:phone_dialer/data/bindings/settings_binding.dart';
-import 'package:phone_dialer/ui/views/contacts_page.dart';
+import 'package:phone_dialer/ui/views/contacts/contacts_page.dart';
 import 'package:phone_dialer/ui/views/phone_dialer.dart';
-import 'package:phone_dialer/ui/views/register_page.dart';
+import 'package:phone_dialer/ui/views/register/register_page.dart';
 import 'package:phone_dialer/ui/views/settings_page.dart';
 
 class Pages {

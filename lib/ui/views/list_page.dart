@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/data/controllers/list_controller.dart';
-import 'package:phone_dialer/extensions/context_extensions.dart';
+import 'package:phone_dialer/utils/extensions/context_extensions.dart';
 //import '../widgets/sliver_app_bar_delegate.dart';
 //import 'package:phone_dialer/widgets/sliver_app_bar_delegate.dart';
 
@@ -44,9 +44,12 @@ class ListPage extends StatelessWidget {
                           child: Padding(
                               padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                               child: TextField(
-                                  controller: listController.searchController,
                                   autofocus: true,
-                                  onChanged: (text) => searchFunction(text),
+                                  onChanged: (text) {
+                                    print("Text changed: $text");
+                                    listController.searchText.value = text;
+                                  }, // searchFunction(text),
+
                                   decoration: InputDecoration(
                                       hintText: "Search",
                                       prefixIcon: IconButton(

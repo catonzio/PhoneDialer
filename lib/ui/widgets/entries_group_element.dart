@@ -1,50 +1,43 @@
-import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/data/controllers/register_controller.dart';
-import 'package:phone_dialer/extensions/context_extensions.dart';
-import 'package:phone_dialer/extensions/super_datetime.dart';
+import 'package:phone_dialer/utils/extensions/super_datetime.dart';
+import 'package:phone_dialer/ui/widgets/entry_element.dart';
+import 'package:phone_dialer/ui/widgets/group_element.dart';
 
 class EntriesGroupElement extends StatelessWidget {
-  final RegisterController controller = Get.find<RegisterController>();
   final DateTime group;
-  final Function(BuildContext, List<int>) elements;
 
-  EntriesGroupElement({super.key, required this.group, required this.elements});
+  const EntriesGroupElement({super.key, required this.group});
 
   @override
   Widget build(BuildContext context) {
+    double height = context.height / 100;
+    double width = context.width / 100;
+
+    final RegisterController controller = Get.find<RegisterController>();
     List<int> idxs = controller.groups[group]!;
 
-    return Material(
-      elevation: 10,
-      color: Colors.transparent,
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Text("${group.day} ${group.monthToWord()}"),
-            ),
-            Container(
-                width: double.infinity,
-                //height: height * 7 * controller.groups[group]!.length.toDouble(),
-                decoration: BoxDecoration(
-                    // color: Colors.grey[900],
-                    color: context.colorScheme.surface,
-                    border: Border.all(
-                        // color: Colors.black,
-                        ),
-                    borderRadius: const BorderRadius.all(Radius.circular(20))),
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: ExpandableNotifier(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: elements(context, idxs)),
-                ))
-          ]),
-    );
+    return GroupElement(
+        title: "${group.day} ${group.monthToWord()}",
+        children: List.generate(
+            idxs.length,
+            (idx) => idx > 0
+                ? [
+                    Padding(
+                        padding: EdgeInsets.fromLTRB(
+                            12 + width * 2 + height * 4, 0, 8, 0),
+                        child: const Divider()),
+                    EntryElement(
+                        entry: controller.entriesFiltered[idxs[idx]],
+                        realIndex: idxs[idx],
+                        index: idx)
+                  ]
+                : [
+                    EntryElement(
+                        entry: controller.entriesFiltered[idxs[idx]],
+                        realIndex: idxs[idx],
+                        index: idx)
+                  ]).expand((element) => element).toList());
   }
 }

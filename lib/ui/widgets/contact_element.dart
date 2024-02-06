@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/data/controllers/contacts_controller.dart';
-import 'package:phone_dialer/extensions/context_extensions.dart';
-import 'dart:math' as math;
-
 import 'package:phone_dialer/ui/widgets/expandable_element.dart';
+import 'package:phone_dialer/utils/utility.dart';
 
 class ContactElement extends StatelessWidget {
-  final ContactsController controller = Get.find<ContactsController>();
   final Contact contact;
   final int index;
   final int realIndex;
 
-  ContactElement(
+  const ContactElement(
       {super.key,
       required this.contact,
       required this.index,
@@ -21,31 +18,36 @@ class ContactElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ContactsController controller = Get.find<ContactsController>();
     Phone? obj = contact.phones.firstOrNull;
-    String num = obj == null ? "" : obj.number;
+    String num = obj == null ? "" : clearPhoneNumber(obj.number);
+
     return ExpandableElement(
-        header: buildHeader(context),
+        header: ContactElementHead(index: realIndex, contact: contact),
         bodyFirstLine: Container(),
         bodySecondLine: Text("Cellulare $num",
             style: const TextStyle(fontWeight: FontWeight.bold)),
-        bodyThirdLine: buildBody(context),
+        bodyThirdLine: ContactElementBody(realIndex: realIndex),
         realIndex: realIndex,
         controller: controller);
   }
+}
 
-  Widget buildHeader(BuildContext context) {
-    double height = MediaQuery.of(context).size.height / 100;
-    double width = MediaQuery.of(context).size.width / 100;
+class ContactElementHead extends StatelessWidget {
+  final int index;
+  final Contact contact;
+
+  const ContactElementHead(
+      {super.key, required this.index, required this.contact});
+
+  @override
+  Widget build(BuildContext context) {
+    final ContactsController controller = Get.find<ContactsController>();
+
+    double height = context.height / 100;
+    double width = context.width / 100;
 
     return Container(
-        // color: Colors.red[(index+1)*50 % 900],
-        width: width * 100,
-        decoration: BoxDecoration(
-            border: Border(
-                bottom: BorderSide(
-          width: 1,
-          color: context.colorScheme.onSurface.withOpacity(0.2),
-        ))),
         padding:
             EdgeInsets.symmetric(horizontal: width * 2, vertical: height * 1),
         alignment: Alignment.center,
@@ -57,10 +59,7 @@ class ContactElement extends StatelessWidget {
                 width: height * 4,
                 height: height * 4,
                 decoration: BoxDecoration(
-                    // color: Colors.grey[900],
-                    color:
-                        Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
-                            .withOpacity(1.0),
+                    color: controller.colors[index],
                     borderRadius: const BorderRadius.all(Radius.circular(20))),
                 child: Center(
                   child: Text(
@@ -75,8 +74,17 @@ class ContactElement extends StatelessWidget {
               ),
             ]));
   }
+}
 
-  Widget buildBody(BuildContext context) {
+class ContactElementBody extends StatelessWidget {
+  final int realIndex;
+
+  const ContactElementBody({super.key, required this.realIndex});
+
+  @override
+  Widget build(BuildContext context) {
+    final ContactsController controller = Get.find<ContactsController>();
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(

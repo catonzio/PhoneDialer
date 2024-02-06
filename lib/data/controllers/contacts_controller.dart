@@ -1,3 +1,4 @@
+import 'package:flutter/painting.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/data/controllers/home_controller.dart';
@@ -23,11 +24,13 @@ class ContactsController extends ListController {
   int get scrollingLetterIndex => _scrollingLetterIndex.value;
   set scrollingLetterIndex(int value) => _scrollingLetterIndex.value = value;
 
+  final RxList<Color> colors = <Color>[].obs;
+
   @override
   onInit() async {
+    super.onInit();
     if (await FlutterContacts.requestPermission()) {
       if (contacts.isEmpty) {
-        isLoadingContacts = true;
         loadContacts();
       }
     } else {
@@ -35,7 +38,7 @@ class ContactsController extends ListController {
           snackPosition: SnackPosition.BOTTOM);
     }
     super.resetExpandableControllers(contactsFiltered);
-    super.onInit();
+    debounce(super.searchText, (callback) => searchContacts(callback));
   }
 
   void loadContacts() async {
@@ -43,18 +46,18 @@ class ContactsController extends ListController {
     // List<Group> groups = await FlutterContacts.getGroups();
 
     // print("Groups: ${groups.length}");
+    isLoadingContacts = true;
 
     FlutterContacts.getContacts(
             withProperties: true, deduplicateProperties: true)
         .then((contacts) {
       contacts = contacts
           .where((Contact c) => !c.isBlank! && c.displayName.isNotEmpty)
-          .toList()
-          // .sublist(0, 100)
-          .obs;
+          .toList();
       contacts.sort((a, b) => a.displayName.compareTo(b.displayName));
       this.contacts = contacts;
       contactsFiltered = contacts;
+      colors.addAll(generateRainbowColors(contactsFiltered.length));
       groups = buildGroups();
 
       isLoadingContacts = false;
@@ -64,7 +67,7 @@ class ContactsController extends ListController {
   searchContacts(String text) {
     if (text.isNotEmpty) {
       contactsFiltered =
-          (contactsFiltered.isNotEmpty ? contactsFiltered : contacts)
+          contacts // (contactsFiltered.isNotEmpty ? contactsFiltered : contacts)
               .where((Contact c) =>
                   c.displayName.toLowerCase().contains(text.toLowerCase()))
               .toList();
@@ -126,5 +129,18 @@ class ContactsController extends ListController {
   void clearText() {
     super.clearText();
     searchContacts("");
+  }
+
+  List<Color> generateRainbowColors(int n) {
+    final List<Color> colors = [];
+    final double increment = 360.0 / n;
+
+    for (int i = 0; i < n; i++) {
+      final double hue = (i * increment) % 360;
+      final Color color = HSVColor.fromAHSV(1.0, hue, 1.0, 1.0).toColor();
+      colors.add(color);
+    }
+
+    return colors;
   }
 }
