@@ -48,8 +48,7 @@ class ContactElementHead extends StatelessWidget {
     double width = context.width / 100;
 
     return Container(
-        padding:
-            EdgeInsets.symmetric(horizontal: width * 2, vertical: height * 1),
+        padding: EdgeInsets.symmetric(horizontal: width * 2),
         alignment: Alignment.center,
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -59,8 +58,9 @@ class ContactElementHead extends StatelessWidget {
                 width: height * 4,
                 height: height * 4,
                 decoration: BoxDecoration(
-                    color: controller.colors[index],
-                    borderRadius: const BorderRadius.all(Radius.circular(20))),
+                    color: controller.colors[index], shape: BoxShape.circle
+                    // borderRadius: const BorderRadius.all(Radius.circular(20))
+                    ),
                 child: Center(
                   child: Text(
                     contact.displayName[0],

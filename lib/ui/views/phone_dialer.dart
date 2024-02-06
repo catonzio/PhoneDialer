@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import 'package:phone_dialer/configs/routes.dart';
 import 'package:phone_dialer/data/controllers/phone_controller.dart';
 import 'package:phone_dialer/ui/views/default_page.dart';
+import 'package:phone_dialer/utils/extensions/context_extensions.dart';
 
 class AlwaysDisabledFocusNode extends FocusNode {
   @override
@@ -14,13 +17,19 @@ class PhoneDialer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height / 100;
-    double width = MediaQuery.of(context).size.width / 100;
-    print("height: ${height * 100}, width: ${width * 100}");
-    print(
-        "rapporto: ${width / height * 100}, ${height / width * 100}, ${1080 / 720}, ${16 / 9}");
+    double height = context.height / 100;
+    double width = context.width / 100;
 
     return DefaultPage(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () =>
+                  context.navigator.pushNamed(Routes.settingsRoute)),
+        ],
+      ),
       body: Center(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.end,

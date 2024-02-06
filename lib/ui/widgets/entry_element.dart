@@ -1,6 +1,7 @@
 import 'package:call_log/call_log.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:phone_dialer/configs/themes.dart';
 import 'package:phone_dialer/data/controllers/register_controller.dart';
 import 'package:phone_dialer/utils/utility.dart';
 
@@ -73,16 +74,19 @@ class EntryElementHeader extends StatelessWidget {
   }
 
   Widget getLeading() {
-    const Map<CallType, Icon> callsMapIcons = {
-      CallType.incoming: Icon(Icons.phone_callback),
-      CallType.missed: Icon(Icons.phone_missed),
-      CallType.outgoing: Icon(Icons.phone_forwarded),
-      CallType.rejected: Icon(Icons.phone_disabled),
-      CallType.blocked: Icon(Icons.block),
-      CallType.voiceMail: Icon(Icons.voicemail),
-      CallType.answeredExternally: Icon(Icons.phone_forwarded),
+    const Map<CallType, IconData> callsMapIcons = {
+      CallType.incoming: Icons.phone_callback,
+      CallType.missed: Icons.phone_missed,
+      CallType.outgoing: Icons.phone_forwarded,
+      CallType.rejected: Icons.phone_disabled,
+      CallType.blocked: Icons.block,
+      CallType.voiceMail: Icons.voicemail,
+      CallType.answeredExternally: Icons.phone_forwarded,
     };
-    return callsMapIcons[entry.callType] ?? Container();
+    return Icon(
+      callsMapIcons[entry.callType],
+      color: yellow,
+    );
   }
 }
 

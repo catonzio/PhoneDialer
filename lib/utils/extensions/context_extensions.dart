@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 extension BuildContextExtensions on BuildContext {
-  ThemeData get theme => Theme.of(this);
+  // ThemeData get theme => Theme.of(this);
 
-  TextTheme get textTheme => theme.textTheme;
+  // TextTheme get textTheme => theme.textTheme;
 
-  ColorScheme get colorScheme => theme.colorScheme;
+  ColorScheme get colorScheme => Theme.of(this).colorScheme;
 
   DefaultTextStyle get defaultTextStyle => DefaultTextStyle.of(this);
 

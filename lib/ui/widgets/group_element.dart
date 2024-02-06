@@ -10,9 +10,10 @@ class GroupElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      elevation: 10,
-      color: Colors.transparent,
+    const borderRadius = BorderRadius.all(Radius.circular(30));
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 1),
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -21,18 +22,23 @@ class GroupElement extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Text(title),
             ),
-            Container(
-                decoration: BoxDecoration(
-                    color: context.colorScheme.surface,
-                    border: Border.all(),
-                    borderRadius: const BorderRadius.all(Radius.circular(20))),
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: ExpandableNotifier(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: children),
-                ))
+            Material(
+              elevation: 1,
+              color: Colors.transparent,
+              borderRadius: borderRadius,
+              child: Container(
+                  decoration: BoxDecoration(
+                      color: context.colorScheme.surface,
+                      border: Border.all(),
+                      borderRadius: borderRadius),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: ExpandableNotifier(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: children),
+                  )),
+            )
           ]),
     );
   }

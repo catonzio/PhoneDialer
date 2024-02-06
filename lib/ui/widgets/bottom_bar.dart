@@ -5,11 +5,11 @@ import 'package:phone_dialer/data/controllers/home_controller.dart';
 import 'bottom_bar_icon.dart';
 
 class BottomBar extends StatelessWidget {
-  final HomeController controller = Get.put(HomeController(), permanent: true);
-  BottomBar({super.key});
+  const BottomBar({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final HomeController controller = Get.find<HomeController>();
     return Container(
         padding: const EdgeInsets.all(8.0),
         child: Obx(

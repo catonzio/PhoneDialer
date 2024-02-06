@@ -1,5 +1,8 @@
 String clearPhoneNumber(String text) {
-  text = text.trim().replaceAll(" ", "");
+  List<String> charsToReplace = [" ", "(", ")", "-", "."];
+  for (String char in charsToReplace) {
+    text = text.replaceAll(char, "");
+  }
 
   if (text.contains("+39")) {
     text = text.replaceAll("+39", "");
