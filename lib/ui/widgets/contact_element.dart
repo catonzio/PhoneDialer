@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/data/controllers/contacts_controller.dart';
+import 'package:phone_dialer/extensions/context_extensions.dart';
 import 'dart:math' as math;
 
-import 'package:phone_dialer/widgets/expandable_element.dart';
+import 'package:phone_dialer/ui/widgets/expandable_element.dart';
 
 class ContactElement extends StatelessWidget {
   final ContactsController controller = Get.find<ContactsController>();
@@ -38,7 +39,16 @@ class ContactElement extends StatelessWidget {
 
     return Container(
         // color: Colors.red[(index+1)*50 % 900],
-        padding: EdgeInsets.symmetric(horizontal: width * 2),
+        width: width * 100,
+        decoration: BoxDecoration(
+            border: Border(
+                bottom: BorderSide(
+          width: 1,
+          color: context.colorScheme.onSurface.withOpacity(0.2),
+        ))),
+        padding:
+            EdgeInsets.symmetric(horizontal: width * 2, vertical: height * 1),
+        alignment: Alignment.center,
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -51,9 +61,6 @@ class ContactElement extends StatelessWidget {
                     color:
                         Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
                             .withOpacity(1.0),
-                    border: Border.all(
-                        // color: Colors.black,
-                        ),
                     borderRadius: const BorderRadius.all(Radius.circular(20))),
                 child: Center(
                   child: Text(

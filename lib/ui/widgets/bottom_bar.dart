@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:phone_dialer/data/controllers/home_controller.dart';
 
-import '../data/controllers/home_controller.dart';
 import 'bottom_bar_icon.dart';
 
 class BottomBar extends StatelessWidget {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/data/controllers/contacts_controller.dart';
-import 'package:phone_dialer/views/default_page.dart';
-import 'package:phone_dialer/views/list_page.dart';
-import 'package:phone_dialer/widgets/contacts_group_element.dart';
+import 'package:phone_dialer/ui/views/default_page.dart';
+import 'package:phone_dialer/ui/views/list_page.dart';
+import 'package:phone_dialer/ui/widgets/contacts_group_element.dart';
 
 class ContactsPage extends StatelessWidget {
   const ContactsPage({super.key});
@@ -57,7 +57,6 @@ class ContactsPage extends StatelessWidget {
                         padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
                         child: ContactsGroupElement(
                           group: group,
-                          // elements: buildElementsList,
                         ),
                       );
                     },

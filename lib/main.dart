@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:phone_dialer/configs/pages.dart';
+import 'package:phone_dialer/configs/routes.dart';
 import 'package:phone_dialer/configs/themes.dart';
 import 'package:phone_dialer/data/bindings/settings_binding.dart';
 
@@ -22,8 +23,8 @@ class MyApp extends StatelessWidget {
       darkTheme: getDarkTheme(),
       themeMode: ThemeMode.system,
       initialBinding: SettingsBinding(),
-      initialRoute: "/phone",
-      getPages: Pages.getPages,
+      initialRoute: Routes.phoneRoute,
+      getPages: Pages.getPages(),
     );
   }
 }

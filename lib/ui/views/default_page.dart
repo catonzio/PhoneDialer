@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phone_dialer/extensions/context_extensions.dart';
-import 'package:phone_dialer/widgets/bottom_bar.dart';
+import 'package:phone_dialer/ui/widgets/bottom_bar.dart';
 
 class DefaultPage extends StatelessWidget {
   final Widget body;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/data/controllers/phone_controller.dart';
-import 'package:phone_dialer/views/default_page.dart';
+import 'package:phone_dialer/ui/views/default_page.dart';
 
 class AlwaysDisabledFocusNode extends FocusNode {
   @override
@@ -41,9 +41,9 @@ class PhoneDialer extends StatelessWidget {
           AspectRatio(
             aspectRatio: 3 / 2,
             child: SizedBox(
-              height: height * 50,
+              // height: height * 50,
               child: GridView.count(
-                  padding: EdgeInsets.fromLTRB(width * 6, 0, width * 6, 0),
+                  padding: EdgeInsets.fromLTRB(width * 2, 0, width * 2, 0),
                   childAspectRatio: 1.8,
                   physics: const NeverScrollableScrollPhysics(),
                   crossAxisCount: 3,

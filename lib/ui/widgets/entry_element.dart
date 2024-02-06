@@ -6,23 +6,22 @@ import 'package:phone_dialer/data/controllers/register_controller.dart';
 import 'expandable_element.dart';
 
 class EntryElement extends StatelessWidget {
-  final RegisterController controller = Get.find<RegisterController>();
   final CallLogEntry entry;
   final int realIndex;
   final int index;
 
-  late Widget leading;
+  // late Widget leading;
 
-  EntryElement(
+  const EntryElement(
       {super.key,
       required this.entry,
       required this.realIndex,
-      required this.index}) {
-    leading = getLeading();
-  }
+      required this.index});
 
   @override
   Widget build(BuildContext context) {
+    final RegisterController controller = Get.find<RegisterController>();
+
     DateTime callDt = DateTime.fromMillisecondsSinceEpoch(entry.timestamp ?? 0);
     String minutes = ((entry.duration ?? 0) ~/ 60).toString().padLeft(2, '0');
     String seconds = ((entry.duration ?? 0) % 60).toString().padLeft(2, '0');
@@ -34,7 +33,7 @@ class EntryElement extends StatelessWidget {
         : Container();
     Widget bodySecondLine =
         Text("${entry.callType.toString()} $minutes:$seconds");
-    Widget bodyThirdLine = buildBody(context);
+    Widget bodyThirdLine = buildBody(context, controller);
 
     return ExpandableElement(
         header: header,
@@ -63,7 +62,8 @@ class EntryElement extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
-          Container(padding: const EdgeInsets.only(right: 16), child: leading),
+          Container(
+              padding: const EdgeInsets.only(right: 16), child: getLeading()),
           Text(
             entry.name ?? entry.number ?? "",
             style: const TextStyle(fontSize: 18),
@@ -76,7 +76,7 @@ class EntryElement extends StatelessWidget {
     );
   }
 
-  Widget buildBody(BuildContext context) {
+  Widget buildBody(BuildContext context, RegisterController controller) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(

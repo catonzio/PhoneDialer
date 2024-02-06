@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/data/controllers/contacts_controller.dart';
 import 'package:phone_dialer/extensions/context_extensions.dart';
-import 'package:phone_dialer/widgets/contact_element.dart';
+import 'package:phone_dialer/ui/widgets/contact_element.dart';
 
 class ContactsGroupElement extends StatelessWidget {
   final ContactsController controller = Get.find<ContactsController>();
@@ -48,21 +48,28 @@ class ContactsGroupElement extends StatelessWidget {
   }
 
   List<Widget> buildElementsList(BuildContext context, List<int> idxs) {
-    double height = MediaQuery.of(context).size.height / 100;
-    double width = MediaQuery.of(context).size.width / 100;
-    List<Widget> res = <Widget>[];
-    for (int i = 0; i < idxs.length; i++) {
-      if (i > 0) {
-        res.add(Padding(
-            padding: EdgeInsets.fromLTRB(12 + width * 2 + height * 4, 0, 8, 0),
-            child: const Divider()));
-      }
-      res.add(ContactElement(
-        contact: controller.contactsFiltered[idxs[i]],
-        index: i,
-        realIndex: idxs[i],
-      ));
-    }
-    return res;
+    return idxs
+        .map((int idx) => ContactElement(
+              contact: controller.contactsFiltered[idx],
+              index: idx,
+              realIndex: idx,
+            ))
+        .toList();
+    // double height = MediaQuery.of(context).size.height / 100;
+    // double width = MediaQuery.of(context).size.width / 100;
+    // List<Widget> res = <Widget>[];
+    // for (int i = 0; i < idxs.length; i++) {
+    //   if (i > 0) {
+    //     res.add(Padding(
+    //         padding: EdgeInsets.fromLTRB(12 + width * 2 + height * 4, 0, 8, 0),
+    //         child: const Divider()));
+    //   }
+    //   res.add(ContactElement(
+    //     contact: controller.contactsFiltered[idxs[i]],
+    //     index: i,
+    //     realIndex: idxs[i],
+    //   ));
+    // }
+    // return res;
   }
 }

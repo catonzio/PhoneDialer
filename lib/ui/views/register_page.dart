@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/data/controllers/register_controller.dart';
-import 'package:phone_dialer/views/default_page.dart';
-import 'package:phone_dialer/views/list_page.dart';
-import 'package:phone_dialer/widgets/entries_group_element.dart';
-import 'package:phone_dialer/widgets/entry_element.dart';
+import 'package:phone_dialer/ui/views/default_page.dart';
+import 'package:phone_dialer/ui/views/list_page.dart';
+import 'package:phone_dialer/ui/widgets/entries_group_element.dart';
+import 'package:phone_dialer/ui/widgets/entry_element.dart';
 
 class RegisterPage extends StatelessWidget {
   final RegisterController controller = Get.find<RegisterController>();
