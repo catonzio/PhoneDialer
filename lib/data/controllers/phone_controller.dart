@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'settings_controller.dart';
 
 class PhoneController extends GetxController {
-  final RxString _phoneNumber = "123".obs;
+  final RxString _phoneNumber = "".obs;
   String get phoneNumber => _phoneNumber.value;
   set phoneNumber(String value) => _phoneNumber.value = value;
 

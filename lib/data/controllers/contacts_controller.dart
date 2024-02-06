@@ -40,7 +40,13 @@ class ContactsController extends ListController {
 
   void loadContacts() async {
     print("Loading contacts");
-    FlutterContacts.getContacts(withProperties: true).then((contacts) {
+    // List<Group> groups = await FlutterContacts.getGroups();
+
+    // print("Groups: ${groups.length}");
+
+    FlutterContacts.getContacts(
+            withProperties: true, deduplicateProperties: true)
+        .then((contacts) {
       contacts = contacts
           .where((Contact c) => !c.isBlank! && c.displayName.isNotEmpty)
           .toList()
@@ -50,6 +56,7 @@ class ContactsController extends ListController {
       this.contacts = contacts;
       contactsFiltered = contacts;
       groups = buildGroups();
+
       isLoadingContacts = false;
     });
   }
@@ -67,7 +74,7 @@ class ContactsController extends ListController {
     groups = buildGroups();
   }
 
-  buildGroups() {
+  Map<String, List<int>> buildGroups() {
     Map<String, List<int>> groups = {};
     for (int i = 0; i < contactsFiltered.length; i++) {
       String firstLetter = contactsFiltered[i].displayName[0].toUpperCase();
