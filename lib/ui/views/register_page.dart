@@ -4,8 +4,8 @@ import 'package:phone_dialer/configs/themes.dart';
 import 'package:phone_dialer/data/controllers/register_controller.dart';
 import 'package:phone_dialer/ui/views/default_page.dart';
 import 'package:phone_dialer/ui/views/list_page.dart';
-import 'package:phone_dialer/ui/views/register/register_main_list.dart';
-import 'package:phone_dialer/ui/views/register/register_scroller.dart';
+import 'package:phone_dialer/ui/widgets/register/register_main_list.dart';
+import 'package:phone_dialer/ui/widgets/register/register_scroller.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});

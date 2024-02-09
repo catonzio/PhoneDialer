@@ -22,6 +22,10 @@ abstract class ListController extends GetxController {
   DateTime get lastScrolled => _lastScrolled.value;
   set lastScrolled(DateTime value) => _lastScrolled.value = value;
 
+  final RxDouble _scrollOffset = 0.0.obs;
+  double get scrollOffset => _scrollOffset.value;
+  set scrollOffset(double value) => _scrollOffset.value = value;
+
   Timer? scrollingTimer;
 
   final RxBool _isSearching = false.obs;
@@ -91,6 +95,7 @@ abstract class ListController extends GetxController {
 
   reactToScroll() {
     FocusManager.instance.primaryFocus?.unfocus();
+    scrollOffset = scrollController.offset;
     // print("Scrooll");
     // if (scrollController.offset >= scrollController.position.maxScrollExtent &&
     //     !scrollController.position.outOfRange) {

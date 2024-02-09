@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/data/controllers/register_controller.dart';
-import 'package:phone_dialer/ui/widgets/entries_group_element.dart';
+import 'package:phone_dialer/ui/widgets/register/element/entries_group_element.dart';
 
 class RegisterMainList extends StatelessWidget {
   const RegisterMainList({super.key});

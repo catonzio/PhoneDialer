@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/configs/themes.dart';
+import 'package:phone_dialer/data/controllers/contacts_controller.dart';
 
 class ContactsScroller extends StatelessWidget {
   const ContactsScroller({super.key});
 
   @override
   Widget build(BuildContext context) {
+    ContactsController contactsController = Get.find<ContactsController>();
+    List<String> groupsLetter = contactsController.groups.keys.toList();
+
     double width = context.width / 100;
 
     return Container(
@@ -33,10 +37,10 @@ class ContactsScroller extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(
-                  21,
+                  groupsLetter.length,
                   (index) => Container(
                         height: width * 0.5,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                             color: Colors.white, shape: BoxShape.circle),
                       ))),
         ],

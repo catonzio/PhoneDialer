@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/configs/themes.dart';
 import 'package:phone_dialer/data/controllers/contacts_controller.dart';
-import 'package:phone_dialer/ui/views/contacts/contacts_main_list.dart';
-import 'package:phone_dialer/ui/views/contacts/contacts_scroller.dart';
+import 'package:phone_dialer/ui/widgets/contacts/contacts_main_list.dart';
+import 'package:phone_dialer/ui/widgets/contacts/contacts_scroller.dart';
 import 'package:phone_dialer/ui/views/default_page.dart';
 import 'package:phone_dialer/ui/views/list_page.dart';
 

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/data/controllers/list_controller.dart';
-import 'package:phone_dialer/utils/extensions/context_extensions.dart';
-//import '../widgets/sliver_app_bar_delegate.dart';
-//import 'package:phone_dialer/widgets/sliver_app_bar_delegate.dart';
-
-import '../widgets/sliver_app_bar_delegate.dart';
+import 'package:phone_dialer/ui/widgets/go_up_button.dart';
+import 'package:phone_dialer/ui/widgets/list_page_header.dart';
 
 class ListPage extends StatelessWidget {
   final ListController listController;
@@ -27,55 +24,12 @@ class ListPage extends StatelessWidget {
       required this.scrollBar,
       required this.searchFunction});
 
-  SliverPersistentHeader makeHeader(BuildContext context, double height) {
-    return SliverPersistentHeader(
-      pinned: true,
-      floating: true,
-      delegate: SliverAppBarDelegate(
-          minHeight: height,
-          maxHeight: height,
-          child: Container(
-            color: context.colorScheme.background,
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Obx(() => listController.isSearching
-                      ? Expanded(
-                          child: Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                              child: TextField(
-                                  autofocus: true,
-                                  onChanged: (text) {
-                                    listController.searchText.value = text;
-                                  }, // searchFunction(text),
-
-                                  decoration: InputDecoration(
-                                      hintText: "Search",
-                                      prefixIcon: IconButton(
-                                          onPressed: () =>
-                                              listController.clearText(),
-                                          icon: const Icon(
-                                              Icons.cancel_outlined))))))
-                      : Container()),
-                  IconButton(
-                    icon: const Icon(Icons.search),
-                    onPressed: () {
-                      listController.isSearching = !listController.isSearching;
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.more_vert),
-                    onPressed: () {},
-                  ),
-                ]),
-          )),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     double height = context.height / 100;
+    double titleHeight = height * 30;
+    double headerHeight = height * 8;
+    Duration animationDuration = const Duration(milliseconds: 200);
 
     return Stack(
       children: [
@@ -83,7 +37,7 @@ class ListPage extends StatelessWidget {
           controller: listController.scrollController,
           slivers: <Widget>[
             SliverFixedExtentList(
-              itemExtent: height * 30,
+              itemExtent: titleHeight,
               delegate: SliverChildListDelegate(
                 [
                   Center(
@@ -96,59 +50,45 @@ class ListPage extends StatelessWidget {
                 ],
               ),
             ),
-            makeHeader(context, height * 8),
-            // buildMainList(context),
+            ListPageHeader(
+                height: headerHeight, listController: listController),
             mainList,
           ],
         ),
-        // Obx(() => listController.isScrolling
-        //     ? Positioned(right: 0, top: 0, bottom: 0, child: scrollBar)
-        //     : Container()),
-        Positioned(right: 0, top: 0, bottom: 0, child: scrollBar),
-        Obx(() => listController.isScrolling
-            ? Positioned(
-                bottom: 0,
-                right: context.width / 2 - 25,
-                left: context.width / 2 - 25,
-                child: GoUpButton(listController: listController))
-            : Container())
+        Obx(() => Positioned(
+              right: 0,
+              top: headerHeight,
+              bottom: 0,
+              child: AnimatedSwitcher(
+                duration: animationDuration,
+                transitionBuilder: (child, animation) {
+                  return ScaleTransition(
+                    scale: animation,
+                    child: child,
+                  );
+                },
+                child: listController.scrollOffset >= titleHeight
+                    ? scrollBar
+                    : const SizedBox.shrink(),
+              ),
+            )),
+        Obx(() => Positioned(
+            bottom: 0,
+            right: context.width / 2 - 25,
+            left: context.width / 2 - 25,
+            child: AnimatedSwitcher(
+              duration: animationDuration,
+              transitionBuilder: (child, animation) {
+                return ScaleTransition(
+                  scale: animation,
+                  child: child,
+                );
+              },
+              child: listController.scrollOffset >= titleHeight
+                  ? GoUpButton(listController: listController)
+                  : const SizedBox.shrink(),
+            )))
       ],
-    );
-  }
-}
-
-class GoUpButton extends StatelessWidget {
-  final ListController listController;
-
-  const GoUpButton({
-    super.key,
-    required this.listController,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    double width = context.width / 100;
-    return Material(
-      elevation: 20,
-      shape: const CircleBorder(),
-      child: Container(
-        width: width * 10,
-        height: width * 10,
-        alignment: Alignment.center,
-        decoration: const BoxDecoration(
-          // color: Colors.grey[900],
-          // border: Border.all(color: Colors.grey[700]!, width: 2),
-          shape: BoxShape.circle,
-        ),
-        child: IconButton(
-          icon: const Icon(Icons.keyboard_double_arrow_up_sharp),
-          padding: const EdgeInsets.all(0),
-          onPressed: () {
-            listController.isAtBottom = false;
-            listController.moveAt(0);
-          },
-        ),
-      ),
     );
   }
 }

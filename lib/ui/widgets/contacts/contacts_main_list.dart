@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phone_dialer/data/controllers/contacts_controller.dart';
-import 'package:phone_dialer/ui/widgets/contacts_group_element.dart';
+import 'package:phone_dialer/ui/widgets/contacts/element/contacts_group_element.dart';
 
 class ContactsMainList extends StatelessWidget {
   const ContactsMainList({super.key});
